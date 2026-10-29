@@ -16,7 +16,7 @@ function dbItem(it){if(Array.isArray(it))it=a2o(it);if(!it||!it.n)return null;co
  if(it.t==='L'){if(!(+it.c>0&&+it.k>0)||!hs.includes(h))return null;return L(n,f,+it.c,+it.k,h,d,+it.cap||0,+it.vol||60,o)}
  if(it.t==='K'){const mg=+it.mgkg;if(!(mg>0))return null;const mxd=+it.max||0,cc=+it.conc||0,via=String(it.via||'').slice(0,40),pre=String(it.pre||'').slice(0,120),pos=String(it.pos||'').slice(0,400);
   return X(n,f,w=>{let dose=mg*w,lim='';if(mxd&&dose>mxd){dose=mxd;lim=` (limitada ao máximo de ${f1(mxd)} mg/dose)`}
-   let s=(pre?pre+' ':'')+`${f2(mg)} mg/kg = ${f1(dose)} mg${lim}`;if(cc)s+=` = ${f2(dose/cc)} mL (${f2(cc)} mg/mL)`;if(+it.tab>0)s+=` = ${f1(dose/+it.tab)} comprimido(s) de ${f2(+it.tab)} mg`;if(via)s+=' '+via;if(h)s+=` de ${h}/${h} h`;if(+it.d)s+=` por ${it.d} dia(s)`;if(pos)s+='. '+pos;return s},o)}
+   const fx=v=>{const a=Math.abs(v);const d=a<0.01?4:a<1?3:a<10?2:1;return String(+v.toFixed(d)).replace('.',',')};let s=(pre?pre+' ':'')+`${fx(mg)} mg/kg = ${fx(dose)} mg${lim}`;if(cc)s+=` = ${f2(dose/cc)} mL (${f2(cc)} mg/mL)`;if(+it.tab>0)s+=` = ${f1(dose/+it.tab)} comprimido(s) de ${f2(+it.tab)} mg`;if(via)s+=' '+via;if(h)s+=` de ${h}/${h} h`;if(+it.d)s+=` por ${it.d} dia(s)`;if(pos)s+='. '+pos;return s},o)}
  if(it.t==='X'){const x=String(it.x||'').slice(0,1200);return x?X(n,f,x,o):null}
  return null}
 const DBP={};
