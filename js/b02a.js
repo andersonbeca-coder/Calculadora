@@ -34,7 +34,7 @@ async function anth(turns,o){const body={model:AC.m,max_tokens:o.max||2500,syste
    try{const e=JSON.parse(ln.slice(5));if(e.type==='content_block_delta'&&e.delta&&e.delta.type==='text_delta'){txt+=e.delta.text;o.onText(txt)}}catch(_){}}}}
  catch(e){if(e.name==='AbortError'){const x={code:'cancelled',text:txt};throw x}throw{code:'Conexão interrompida',text:txt}}
  return{text:txt,src:[]}}
-async function gem(turns,o){const mk=w=>{const b={system_instruction:{parts:[{text:o.system||SYS}]},contents:turns.map(t=>({role:t.role==='assistant'?'model':'user',parts:[{text:String(t.content)}]})),generationConfig:{maxOutputTokens:o.max||2500,temperature:0.3}};if(w)b.tools=[{google_search:{}}];return b};
+async function gem(turns,o){const mk=w=>{const b={system_instruction:{parts:[{text:o.system||SYS}]},contents:turns.map(t=>({role:t.role==='assistant'?'model':'user',parts:Array.isArray(t.content)?t.content.map(b=>b&&b.type==='image'&&b.source?{inline_data:{mime_type:b.source.media_type,data:b.source.data}}:{text:String((b&&b.text)||'')}):[{text:String(t.content)}]})),generationConfig:{maxOutputTokens:o.max||2500,temperature:0.3}};if(w)b.tools=[{google_search:{}}];return b};
  const go=async w=>{let r;try{r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(AC.gm)+':generateContent',{method:'POST',signal:o.signal,headers:{'content-type':'application/json','x-goog-api-key':AC.g},body:JSON.stringify(mk(w))})}
   catch(e){if(e.name==='AbortError')throw{code:'cancelled'};throw{code:'Falha de rede (sem internet ou bloqueio do navegador).'}}
   if(!r.ok){let m='';try{const j=await r.json();m=(j.error&&j.error.message)||''}catch(e){}const st=r.status;

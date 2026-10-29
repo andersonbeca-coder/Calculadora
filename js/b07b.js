@@ -147,8 +147,9 @@ window.drawCaso=function(){const w=$('caso');if(!w)return;
  <div class="full"><label>Sexo</label><div class="seg" id="csx"><button type="button" data-v="f" class="${C.sex==='f'?'on':''}">Feminino</button><button type="button" data-v="m" class="${C.sex==='m'?'on':''}">Masculino</button></div></div>
  <div class="ck" id="cgw" ${C.sex==='f'?'':'hidden'}><input id="cig" type="checkbox" ${$('gest').checked?'checked':''}><span>Gestante</span></div>
  <div class="full"><label>Tempo de evolução</label><div class="seg" id="cdu"><button type="button" data-v="a" class="${C.dur==='a'?'on':''}">Até 7 dias</button><button type="button" data-v="s" class="${C.dur==='s'?'on':''}">1 a 3 semanas</button><button type="button" data-v="c" class="${C.dur==='c'?'on':''}">&gt; 3 semanas</button></div></div></div></div>
- <div class="card"><b>História (texto livre)</b><textarea id="chs" rows="3" style="width:100%" placeholder="Ex.: menina de 5 anos, febre há 2 dias, dor de garganta e dor ao engolir, sem tosse, placas nas amígdalas">${esc(C.hist)}</textarea>
- <div class="row" style="margin:0"><button class="chip" id="cre" type="button" style="margin:6px 6px 0 0">Reconhecer sintomas no texto</button><button class="chip" id="cai" type="button" style="margin:6px 0 0">IA: estruturar a história</button></div><div id="cmsg" class="fm"></div></div>
+ <div class="card"><b>História, diagnóstico ou pedido de conduta</b><div class="fm" style="margin:2px 0 6px">Escreva a história do paciente <u>ou</u> peça direto: “conduta AVC”, “crise asmática grave”, “pielonefrite casa”. Já sabe o diagnóstico? A conduta, as prescrições e os critérios de internação aparecem logo abaixo.</div><textarea id="chs" rows="3" style="width:100%" placeholder="Ex.: menina de 5 anos, febre há 2 dias, dor de garganta e dor ao engolir, sem tosse, placas nas amígdalas  —  ou  —  conduta AVC">${esc(C.hist)}</textarea>
+ <div class="row" style="margin:0"><button class="chip" id="cre" type="button" style="margin:6px 6px 0 0">Reconhecer sintomas no texto</button><button class="chip" id="cai" type="button" style="margin:6px 6px 0 0">IA: estruturar a história</button><button class="chip" id="cbusca" type="button" style="margin:6px 6px 0 0">\uD83D\uDD0E Buscar conduta</button><button class="chip" id="cim" type="button" style="margin:6px 0 0">\uD83D\uDCF7 Foto / imagem</button></div><input id="cimf" type="file" accept="image/*" multiple hidden><div id="cmsg" class="fm"></div><div id="csug"></div><div id="cimg"></div></div>
+ <div id="cpan"></div>
  <div class="card"><b>Sintomas e achados</b> <span class="fm">(toque: presente ✓ → ausente ✗ → remover)</span>
  <input id="csq" autocomplete="off" placeholder="Digite a 1ª letra: f → febre, fraqueza…" style="margin-top:8px"><div id="css"></div>
  <div id="csel" style="margin-top:6px"></div>
@@ -231,9 +232,9 @@ function update(){const R=rank(),w=$('cres');if(!w)return;
  const ex=$('lex');if(ex)ex.onclick=async()=>{const t=JSON.stringify(LRN);try{await navigator.clipboard.writeText(t);lst('Casos copiados para a área de transferência ('+LRN.cases.length+').')}catch(e){prompt('Copie:',t)}};
  const im=$('lim');if(im)im.onclick=()=>{const t=prompt('Cole o JSON exportado:');if(!t)return;try{const o=JSON.parse(t);if(!o.cases)throw 0;LRN.cases=LRN.cases.concat(o.cases.filter(c=>c&&c.conf)).slice(-2000);LRN_SAVE();LST=null;update()}catch(e){lst('JSON inválido.')}};
  w.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{setS(b.dataset.q,+b.dataset.v);refresh()});
- w.querySelectorAll('[data-rx]').forEach(b=>b.onclick=()=>{const k=b.dataset.rx,pk=P[k],t=pk.c&&!pk.a?'c':pk.a&&!pk.c?'a':$('tipo').value||'a';if(!$('tipo').value||(pk.c&&!pk.a)||(pk.a&&!pk.c)){$('tipo').value=t;$('tipo').dispatchEvent(new Event('change'))}$('pat').value=k;$('q').value=k;$('dest').value=b.dataset.dst||'c';build();rx();showTab('t-rx')});
- w.querySelectorAll('[data-cd]').forEach(b=>b.onclick=()=>{LSEL={t:'d',k:b.dataset.cd};LT='d';showTab('t-bib')});
- w.querySelectorAll('[data-ai]').forEach(b=>b.onclick=()=>{const r=R.out[+b.dataset.ai];showTab('t-ia');csend(`Neste caso, discuta "${r.d.n}": critérios diagnósticos, o que confirma ou afasta, exames, conduta e sinais de alarme.`)})}
+ w.querySelectorAll('[data-rx]').forEach(b=>b.onclick=()=>{if(window.condOpen&&P[b.dataset.rx]){condOpen(b.dataset.rx,b.dataset.dst==='h'?'hosp':'casa');return}const k=b.dataset.rx,pk=P[k],t=pk.c&&!pk.a?'c':pk.a&&!pk.c?'a':$('tipo').value||'a';if(!$('tipo').value||(pk.c&&!pk.a)||(pk.a&&!pk.c)){$('tipo').value=t;$('tipo').dispatchEvent(new Event('change'))}$('pat').value=k;$('q').value=k;$('dest').value=b.dataset.dst||'c';build();rx();showTab('t-rx')});
+ w.querySelectorAll('[data-cd]').forEach(b=>b.onclick=()=>{if(window.condOpen&&P[b.dataset.cd]){condOpen(b.dataset.cd,'cond');return}LSEL={t:'d',k:b.dataset.cd};LT='d';showTab('t-bib')});
+ w.querySelectorAll('[data-ai]').forEach(b=>b.onclick=()=>{const r=R.out[+b.dataset.ai];showTab('t-ia');csend(`Neste caso, discuta "${r.d.n}": critérios diagnósticos, o que confirma ou afasta, exames, conduta e sinais de alarme.`)});window.__cu&&window.__cu()}
 
 /* integra o caso ao contexto do chat de IA */
 const _cx=ctxPac;
@@ -241,4 +242,14 @@ ctxPac=function(){let s=_cx();const f=findings(),pres=Object.keys(f).filter(k=>f
  if(!(pres.length||abs.length||C.hist||C.sex))return s;
  const R=rank();
  return s+'\nCaso clínico: sexo '+(C.sex==='f'?'feminino':C.sex==='m'?'masculino':'não informado')+'; evolução '+({a:'até 7 dias',s:'1 a 3 semanas',c:'> 3 semanas'})[C.dur]+'; achados presentes: '+(pres.join(', ')||'nenhum')+'; ausentes: '+(abs.join(', ')||'nenhum')+(C.hist?'; história: '+C.hist.slice(0,600):'')+(R.out.length?'; ranking local do app: '+R.out.slice(0,5).map(r=>r.d.n).join('; '):'')+'.'};
+
+/* abas */
+const _st=showTab;
+showTab=function(id){_st(id);if(id==='t-caso')drawCaso()};
+const st=document.createElement('style');st.textContent='.sx,:root:not([data-theme="light"]) .sx{margin:5px 5px 0 0;padding:7px 11px;background:var(--in);color:var(--tx);border:1px solid var(--bd);border-radius:99px;font-weight:500;font-size:13px}.sx.on,:root:not([data-theme="light"]) .sx.on{background:var(--ac);color:#fff;border-color:var(--ac)}:root:not([data-theme="light"]) .sx.on{color:#06201c}.sx.off,:root:not([data-theme="light"]) .sx.off{text-decoration:line-through;color:var(--wn);border-color:var(--wn)}.tabbar button{font-size:10px}';document.head.appendChild(st);
+const main=document.querySelector('main'),sec=document.createElement('section');sec.id='t-caso';sec.innerHTML='<div id="caso"></div>';main.insertBefore(sec,$('t-rx'));
+const nav=document.querySelector('.tabbar'),btn=document.createElement('button');btn.dataset.t='t-caso';btn.innerHTML='<span>\uD83E\uDE7A</span>Caso';nav.insertBefore(btn,nav.firstChild);
+btn.onclick=()=>showTab('t-caso');
+nav.querySelectorAll('button').forEach(b=>{if(b!==btn)b.onclick=()=>{if(b.dataset.t==='t-bib'&&!$('t-bib').hidden)LSEL=null;showTab(b.dataset.t)}});
+window.__caso={get C(){return C},S,SI,DX:()=>DX,findDx,save,sync,setS,refresh,update,rank};
 })();

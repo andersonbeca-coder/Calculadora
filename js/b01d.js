@@ -1,5 +1,5 @@
 
-function rxH(){
+function rxHHtml(){
  const w=parseFloat($('peso').value)||0,a=parseFloat($('idade').value),ch=$('tipo').value==='c',k=$('pat').value,f=(FAM.find(x=>x[0].test(k))||[])[1],ag=$('idade').value;
  const g={};cur.forEach(m=>{if(!m.on||m.blk||!m.r)return;const u=RT(m);(g[u]=g[u]||[]).push([m,m.r])});
  let hid='';
@@ -19,7 +19,7 @@ function rxH(){
  h+='<div class="us">4) CUIDADOS DE ENFERMAGEM / MONITORIZAÇÃO</div><ul>'+cuid.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>';
  h+='<div class="us">5) REAVALIAÇÃO</div><div class="it" style="text-transform:none">Reavaliar em ____ h. Definir: alta com receita para casa, observação prolongada, internação ou transferência.</div>';
  h+=`<div class="pt" style="margin-top:14px">${new Date().toLocaleDateString('pt-BR')} — ${esc($('med').value||'Médica(o)')}${$('crm').value?' — CRM '+esc($('crm').value):''}<br>______________________________</div></div>`;
- $('rx').innerHTML=h}
+ return h}
 $('dest').onchange=()=>{RXMAN=false;$('rf').hidden=true;rx()};
 $('pr').onclick=()=>{try{window.print()}catch(e){}};
 $('dr').onclick=()=>{if(!DLD)return;DLD.save({filename:'receita.html',data:'<!DOCTYPE html><html lang="pt-BR"><meta charset="utf-8"><title>Receita</title><style>body{font:14px/1.5 Arial,sans-serif;max-width:720px;margin:20px auto}.rb,.rb2{border:1px solid #333;padding:14px;background:#f0f6fc}.rb2{border-top:0}.rh{text-align:center;font-weight:700;margin-bottom:8px}.us{font-weight:700;margin-top:10px}.it{text-transform:uppercase;margin:8px 0}.pt{font-size:13px}ul{margin:6px 0 0 18px}@media print{.np{display:none}}</style><body>'+$('rx').innerHTML+'<p class="np"><button onclick="print()">Imprimir</button></p></body></html>'}).catch(()=>{$('dr').textContent='Download indisponível'})};
