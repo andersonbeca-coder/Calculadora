@@ -1,9 +1,9 @@
 
-/* ===== Parte 11 — Receituário adulto (Yule Nogueira): protocolos que faltavam ===== */
+/* ===== Parte 11 — Receituário adulto: protocolos que faltavam ===== */
 (function(){
 const mk=(k,kw,o)=>{NP(k,kw,o);const s=$('pat');if(s&&![...s.options].some(x=>x.value===k))s.add(new Option(k,k))};
 const E=(n,f,t,o)=>X(n,f,t,o||{});
-const Y='(Receituário Yule Nogueira)';
+const Y='(conferir o protocolo local)';
 const DIP=()=>T('Dipirona','comprimido 500 mg',500,2,6,3,12,{sos:'dor ou febre',nt:'1–2 cp (500–1000 mg) de 6/6h se dor ou febre; máx. 4 g/dia'});
 const IBU=()=>T('Ibuprofeno','comprimido 600 mg',600,1,8,5,15,{aine:1,nt:'Com alimento; evitar em gestante, úlcera, doença renal'});
 const CET=(d)=>T('Cetoprofeno','comprimido 100 mg',100,1,12,d||5,(d||5)*2,{aine:1,nt:'Com alimento; evitar em gestante, úlcera, doença renal'});
