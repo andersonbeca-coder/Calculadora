@@ -1,4 +1,6 @@
 
+function scSuggest(q){const tk=nz(q).split(/[^a-z0-9]+/).filter(Boolean);if(!tk.length)return[];
+ return Object.keys(SCALES).map(k=>{const w=nz(SCALES[k].n+' '+SCALES[k].kw).split(/[^a-z0-9]+/);return[k,tk.filter(t=>w.some(x=>x.startsWith(t))).length]}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,4).map(x=>x[0])}
 function openScale(id){const s=SCALES[id],b=$('scr');
  if(s.ref){b.innerHTML=`<div class="card"><b>${esc(s.n)}</b></div>`+s.ref.map(r=>`<div class="card"><b>${esc(r[0])}</b><div>${esc(r[1])}</div></div>`).join('');return}
  let h=`<div class="card"><b>${esc(s.n)}</b>`;

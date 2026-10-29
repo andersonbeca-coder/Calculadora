@@ -80,7 +80,7 @@ function drawCl(){const k=$('pat').value,f=(FAM.find(x=>x[0].test(k))||[])[1],c=
   el.querySelectorAll('input').forEach(i=>i.onchange=calc);calc()});
  $('inor').onchange=upd}
 let DLD=null;
-const RT=m=>{const n=(m.n+' '+m.f).toLowerCase();return /^\s*(conduta|procedimento|encaminhamento)/.test(String(m.f||'').toLowerCase())?'CONDUTA / PROCEDIMENTO':/inalat|nebuliza|spray/.test(n)?'USO INALATÓRIO':/colírio|ocular/.test(n)?'USO OCULAR':/otol/.test(n)?'USO OTOLÓGICO':/tópic|creme|pomada/.test(n)?'USO TÓPICO':/\bim\b|\bev\b|ampola/.test(n)?'USO PARENTERAL':'USO ORAL'};
+const RT=m=>{const n=(m.n+' '+m.f).toLowerCase();return /^\s*(conduta|procedimento|encaminhamento)/.test(String(m.f||'').toLowerCase())?'CONDUTA / PROCEDIMENTO':/inalat|nebuliza|spray/.test(n)?'USO INALATÓRIO':/colírio|ocular/.test(n)?'USO OCULAR':/otol/.test(n)?'USO OTOLÓGICO':/tópic|creme|pomada/.test(n)?'USO TÓPICO':/\bim\b|\bev\b|\biv\b|\bsc\b|subcut|transfus|ampola/.test(n)?'USO PARENTERAL':'USO ORAL'};
 const RO=['USO INALATÓRIO','USO ORAL','USO OCULAR','USO OTOLÓGICO','USO TÓPICO','USO PARENTERAL','CONDUTA / PROCEDIMENTO'];
 function rx(){if(RXMAN)return;if($('dest')&&$('dest').value==='h')return rxH();
  const g={};let n=0;

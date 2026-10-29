@@ -25,7 +25,7 @@ function dbProto(k,d){if(!k||!d)return;const mp=a=>(Array.isArray(a)?a:[]).map(d
  const nt=strs(d.nt,10);nt.push('Base online'+(d.fonte?' — fonte: '+String(d.fonte).slice(0,160):'')+'. Confira doses, alergias, gestação e o protocolo local antes de prescrever.');
  NP(k,String(d.kw||k).slice(0,400),{c:c.length?c:undefined,a:a.length?a:undefined,nt});
  const cd=d.cd&&typeof d.cd==='object'?{dx:strs(d.cd.dx),tx:strs(d.cd.tx),enc:strs(d.cd.enc),ret:strs(d.cd.ret)}:undefined;
- CLX[k]={q:strs(d.q).length?strs(d.q):['Há quantos dias e como começou? Febre, dor, vômitos, falta de ar?','Alergia a medicamentos, gestação e medicamentos em uso?','Doenças de base (diabetes, hipertensão, rins, fígado, coração)?'],or:strs(d.or).length?strs(d.or):['Tome os medicamentos nos horários prescritos.','Volte se piorar ou surgirem sinais de alarme.'],hosp:strs(d.hosp),sc:Array.isArray(d.sc)?d.sc:undefined,cd};
+ CLX[k]={q:strs(d.q).length?strs(d.q):['Há quantos dias e como começou? Febre, dor, vômitos, falta de ar?','Alergia a medicamentos, gestação e medicamentos em uso?','Doenças de base (diabetes, hipertensão, rins, fígado, coração)?'],or:strs(d.or).length?strs(d.or):['Tome os medicamentos nos horários prescritos.','Volte se piorar ou surgirem sinais de alarme.'],hosp:strs(d.hosp),sc:Array.isArray(d.sc)?d.sc:undefined,diet:d.diet?String(d.diet).slice(0,300):undefined,hyd:d.hyd?String(d.hyd).slice(0,300):undefined,cd};
  DBP[k]=1;const s=$('pat');if(s&&![...s.options].some(o=>o.value===k))s.add(new Option(k,k))}
 function dbApply(k,d){try{
  if(k.startsWith('p:'))dbProto(k.slice(2),d);

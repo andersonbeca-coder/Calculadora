@@ -9,8 +9,9 @@ function rxH(){
  const spo=ch?'93%':'92%';
  const cuid=['Sinais vitais (FC, FR, PA, Tax, SpO2) de 4/4 h','Controle de diurese e aceitação alimentar','O2 suplementar apenas se SpO2 < '+spo+'; cabeceira elevada a 30°','Manter acesso venoso salinizado, se puncionado','Comunicar plantonista se: piora clínica, FR ou FC elevadas, SpO2 baixa, convulsão, rebaixamento do nível de consciência ou vômitos persistentes'].concat(HFAM[f]||[],(getCl(k,f)||{}).hosp||[]);
  let n=0,h=`<div class="rb"><div class="rh">PRESCRIÇÃO MÉDICA — HOSPITAL / PRONTO ATENDIMENTO</div><div class="pt">Paciente: ${esc($('pac').value||'__________________')}${ag?' · '+esc(ag)+' ano(s)':''}${w?' · '+esc(w)+' kg':''} · Alergias: ${esc(algTxt())}${k?'<br>Hipótese diagnóstica: '+esc(k):''}<br>Leito: ______ · Data/hora: ${new Date().toLocaleString('pt-BR')}</div>`;
- h+='<div class="us">1) DIETA</div><div class="it" style="text-transform:none">Dieta livre, conforme aceitação (jejum se vômitos incoercíveis ou indicação cirúrgica).</div>';
- h+='<div class="us">2) HIDRATAÇÃO</div><div class="it" style="text-transform:none">'+esc(hid)+'</div>';
+ const cl0=getCl(k,f)||{};
+ h+='<div class="us">1) DIETA</div><div class="it" style="text-transform:none">'+esc(cl0.diet||'Dieta livre, conforme aceitação (jejum se vômitos incoercíveis ou indicação cirúrgica).')+'</div>';
+ h+='<div class="us">2) HIDRATAÇÃO</div><div class="it" style="text-transform:none">'+esc(cl0.hyd||hid)+'</div>';
  h+='<div class="us">3) MEDICAÇÕES</div>';
  const any=HO.some(u=>g[u]);
  HO.forEach(u=>{if(!g[u])return;h+=`<div class="it" style="text-transform:none"><i>${u}</i></div>`;g[u].forEach(([m,r])=>{n++;h+=`<div class="it" style="text-transform:none"><b>${n}) ${esc(m.n)}${m.f&&m.f!=='manual'?' '+esc(m.f):''}</b> — ${esc(r.need?'['+r.need+']':(r.hx||r.x))}</div>`})});
@@ -88,5 +89,3 @@ exan:{n:'Doenças exantemáticas: diferencial',kw:'exantema exantemática saramp
 });
 const PCAP=n=>({Amoxicilina:1000,'Amoxicilina/Clavulanato':1000,Cefalexina:500,Azitromicina:500,Cefuroxima:500,Cefaclor:500,Ibuprofeno:400,'Dipirona':1000,Paracetamol:750,Prednisolona:40,Hidroxizina:25,Cetoprofeno:100})[n]||0;
 const pedItem=p=>{const o={nt:(p[8]?p[8]+'. ':'')+'Fonte: planilha de doses pediátricas'};if(p[7])o.g=20;if(p[6])o.sos=/Dipirona|Paracetamol/.test(p[0])?'febre ou dor':'necessário';return L(p[0],p[1],p[2],p[3],p[4],p[5],p[4]<=8&&/Amoxicilina/.test(p[0])?500:PCAP(p[0].replace(/ (Gotas|Xarope)$/,'')),/gotas/.test(p[1])?20:100,o)};
-function scSuggest(q){const tk=nz(q).split(/[^a-z0-9]+/).filter(Boolean);if(!tk.length)return[];
- return Object.keys(SCALES).map(k=>{const w=nz(SCALES[k].n+' '+SCALES[k].kw).split(/[^a-z0-9]+/);return[k,tk.filter(t=>w.some(x=>x.startsWith(t))).length]}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,4).map(x=>x[0])}
