@@ -13,7 +13,8 @@ document.querySelectorAll('.seg').forEach(sg=>{const sel=$(sg.dataset.for);
  sel.addEventListener('change',sync);sync()});
 
 /* --- núcleo de IA: Claude por chave de API, servidor próprio ou conta do artefato --- */
-const AC={k:LS('ak2',''),m:LS('am2','claude-sonnet-5-5'),p:LS('ap2',''),g:LS('gk2',''),gm:LS('gm2','gemini-2.5-flash')};
+const gmOk=v=>{v=String(v||'').trim().replace(/^models\//,'');return /^(gemini|gemma)-[A-Za-z0-9.\-_]+$/i.test(v)?v:'gemini-2.5-flash'};
+const AC={k:LS('ak2',''),m:LS('am2','claude-sonnet-5-5'),p:LS('ap2',''),g:LS('gk2',''),gm:gmOk(LS('gm2','gemini-2.5-flash'))};
 const aiMode=()=>AC.p?'proxy':AC.k?'key':AC.g?'gemini':SAMPLE?'sample':'';
 const aiLabel=()=>({proxy:'Servidor próprio',key:'Claude · sua chave ('+AC.m.replace('claude-','')+')',gemini:'Gemini · sua chave ('+AC.gm.replace('gemini-','')+')',sample:'Claude · sua conta (dentro do artefato)'})[aiMode()]||'IA não configurada';
 const SYS=`Você é um assistente de apoio à decisão clínica para médicos no Brasil (UBS, UPA/PS, plantão e atenção primária). Responda sempre em português do Brasil, de forma objetiva e estruturada (tópicos curtos, negrito nos pontos-chave).
@@ -35,12 +36,16 @@ async function anth(turns,o){const body={model:AC.m,max_tokens:o.max||2500,syste
  catch(e){if(e.name==='AbortError'){const x={code:'cancelled',text:txt};throw x}throw{code:'Conexão interrompida',text:txt}}
  return{text:txt,src:[]}}
 async function gem(turns,o){const mk=w=>{const b={system_instruction:{parts:[{text:o.system||SYS}]},contents:turns.map(t=>({role:t.role==='assistant'?'model':'user',parts:Array.isArray(t.content)?t.content.map(b=>b&&b.type==='image'&&b.source?{inline_data:{mime_type:b.source.media_type,data:b.source.data}}:{text:String((b&&b.text)||'')}):[{text:String(t.content)}]})),generationConfig:{maxOutputTokens:o.max||2500,temperature:0.3}};if(w)b.tools=[{google_search:{}}];return b};
- const go=async w=>{let r;try{r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(AC.gm)+':generateContent',{method:'POST',signal:o.signal,headers:{'content-type':'application/json','x-goog-api-key':AC.g},body:JSON.stringify(mk(w))})}
+ let gmCur=gmOk(AC.gm),bearer=false;const go=async w=>{let r;try{r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(gmCur)+':generateContent',{method:'POST',signal:o.signal,headers:Object.assign({'content-type':'application/json'},bearer?{'authorization':'Bearer '+AC.g}:{'x-goog-api-key':AC.g}),body:JSON.stringify(mk(w))})}
   catch(e){if(e.name==='AbortError')throw{code:'cancelled'};throw{code:'Falha de rede (sem internet ou bloqueio do navegador).'}}
   if(!r.ok){let m='';try{const j=await r.json();m=(j.error&&j.error.message)||''}catch(e){}const st=r.status;
-   throw{code:st===400&&/API key/i.test(m)?'Chave do Gemini inválida. Gere outra em aistudio.google.com/apikey.':st===403?'Acesso negado (403): confira a chave do Gemini.':st===404?'Modelo do Gemini indisponível (404). Troque o modelo em Config.':st===429?'Limite gratuito do Gemini atingido (429). Aguarde um pouco e tente de novo.':st>=500?'Gemini indisponível ('+st+'). Tente de novo.':'Erro '+st+(m?': '+m.slice(0,140):''),status:st}}
+   throw{code:st===400&&/API key/i.test(m)?'Chave do Gemini inválida. Gere outra em aistudio.google.com/apikey.':st===401?'Chave do Gemini recusada (401). Chaves novas começam com AQ. e funcionam; se persistir, crie uma chave nova em aistudio.google.com/apikey escolhendo um projeto novo, ou use a chave do Claude.':st===403?'Acesso negado (403): confira a chave do Gemini.':st===404?'Modelo do Gemini indisponível (404). No campo Modelo use um nome como gemini-2.5-flash (não o ID do projeto). Toque em Ver modelos liberados.':st===429?'Limite gratuito do Gemini atingido (429). Aguarde um pouco e tente de novo.':st>=500?'Gemini indisponível ('+st+'). Tente de novo.':'Erro '+st+(m?': '+m.slice(0,140):''),status:st}}
   return r.json()};
- let j,nw=false;try{j=await go(!!o.web)}catch(e){if(o.web&&e.status===400){j=await go(false);nw=true}else throw e}
+ let j,nw=false;const run=async()=>{try{return await go(!!o.web)}catch(e){if(o.web&&e.status===400){nw=true;return await go(false)}throw e}};
+ try{j=await run()}catch(e){
+  if(e.status===401&&!bearer){bearer=true;try{j=await run()}catch(e2){bearer=false;throw e}}
+  else if(e.status===404){let ok=false;for(const m of ['gemini-2.5-flash','gemini-flash-latest','gemini-2.5-flash-lite','gemini-2.0-flash']){if(m===gmCur)continue;gmCur=m;try{j=await run();ok=true;AC.gm=m;LSs('gm2',m);break}catch(e3){if(e3.status!==404)throw e3}}if(!ok)throw e}
+  else throw e}
  const c=(j.candidates||[])[0]||{},txt=((c.content||{}).parts||[]).map(x=>x.text||'').join('');
  if(!txt)throw{code:j.promptFeedback&&j.promptFeedback.blockReason?'Gemini bloqueou a resposta ('+j.promptFeedback.blockReason+'). Reformule.':'Gemini não devolveu texto. Tente de novo.'};
  const src=[];(((c.groundingMetadata||{}).groundingChunks)||[]).forEach(x=>x.web&&x.web.uri&&src.push({u:x.web.uri,t:x.web.title||x.web.uri}));
@@ -129,10 +134,10 @@ $('wb').onclick=webCheck;
 function drawCfg(){const w=$('cfg');if(!w)return;
  w.innerHTML=`<div class="card"><b>IA — Google Gemini (gratuito)</b> <span class="pill ${AC.g?'ok':'w'}" id="gst">${AC.g?'chave salva':'sem chave'}</span>
  <div class="fm" style="margin:6px 0">Opção gratuita, sem depender da sua conta Claude. A chave fica <b>só neste aparelho</b> (nunca vai para o GitHub). <b>Não digite nome, CPF ou dados que identifiquem o paciente</b>: no plano gratuito o Google pode usar o texto para melhorar seus produtos.</div>
- <label>Chave do Gemini (AIza…)</label><input id="gk" type="password" autocomplete="off" value="${esc(AC.g)}" placeholder="AIza…">
- <label style="margin-top:8px">Modelo</label><input id="gmd" list="gml" value="${esc(AC.gm)}"><datalist id="gml"><option value="gemini-2.5-flash"><option value="gemini-2.5-flash-lite"><option value="gemini-2.5-pro"></datalist>
- <div class="row"><button id="gsv" type="button">Salvar e testar Gemini</button><button class="chip" id="grm" type="button">Remover chave</button></div><div id="gfs" class="fm"></div>
- <details style="margin-top:8px"><summary class="fm">Passo a passo para gerar a chave</summary><div class="fm" style="margin-top:6px">1) No celular ou computador, abra <b>aistudio.google.com/apikey</b> e entre com sua conta Google. 2) Toque em <b>Criar chave de API</b> (Create API key) e aceite os termos. 3) Copie a chave (começa com AIza…). 4) Cole acima e toque em <b>Salvar e testar</b>. 5) Se aparecer erro de modelo, abra o AI Studio, veja qual modelo Flash está liberado no plano gratuito e digite o nome no campo Modelo. Limites gratuitos mudam com o tempo; ao atingir o limite, espere ou use a chave do Claude. Cada pessoa (ex.: sua esposa) cria a própria chave no próprio aparelho.</div></details></div>
+ <label>Chave do Gemini (AQ… ou AIza…)</label><input id="gk" type="password" autocomplete="off" value="${esc(AC.g)}" placeholder="AQ.… ou AIza…">
+ <label style="margin-top:8px">Modelo</label><input id="gmd" list="gml" value="${esc(AC.gm)}"><datalist id="gml"><option value="gemini-2.5-flash"><option value="gemini-2.5-flash-lite"><option value="gemini-2.5-pro"><option value="gemini-flash-latest"></datalist>
+ <div class="fm">No campo Modelo vai o <b>nome do modelo</b> (ex.: gemini-2.5-flash), nunca o ID do projeto.</div><div class="row"><button id="gsv" type="button">Salvar e testar Gemini</button><button class="chip" id="glm" type="button">Ver modelos liberados</button><button class="chip" id="grm" type="button">Remover chave</button></div><div id="gfs" class="fm"></div>
+ <details style="margin-top:8px"><summary class="fm">Passo a passo para gerar a chave</summary><div class="fm" style="margin-top:6px">1) No celular ou computador, abra <b>aistudio.google.com/apikey</b> e entre com sua conta Google. 2) Toque em <b>Criar chave de API</b> (Create API key) e aceite os termos. 3) Copie a chave (as novas começam com AQ. — as antigas, com AIza; as duas funcionam aqui). 4) Cole acima e toque em <b>Salvar e testar</b>. 5) Se aparecer erro de modelo, abra o AI Studio, veja qual modelo Flash está liberado no plano gratuito e digite o nome no campo Modelo. Limites gratuitos mudam com o tempo; ao atingir o limite, espere ou use a chave do Claude. Cada pessoa (ex.: sua esposa) cria a própria chave no próprio aparelho.</div></details></div>
 <div class="card"><b>IA — Claude</b> <span class="pill ${aiMode()?'ok':'w'}" id="cfst">${esc(aiLabel())}</span>
  <div class="fm" style="margin:6px 0">Para usar no plantão, fora do Claude: cadastre uma chave da API do Claude. Ela fica <b>só neste aparelho</b> e só você tem. Dentro do Claude (artefato) o app usa a sua conta e não precisa de chave.</div>
  <label>Chave da API (sk-ant-…)</label><input id="ck" type="password" autocomplete="off" value="${esc(AC.k)}" placeholder="sk-ant-api03-…">
@@ -145,9 +150,14 @@ function drawCfg(){const w=$('cfg');if(!w)return;
   if(!aiMode()){o.textContent='Cole a chave primeiro.';return}o.textContent='Testando…';
   try{const r=await aiRaw([{role:'user',content:'Responda apenas: ok'}],{max:20});o.textContent='✓ Funcionando: '+String(r.text).slice(0,30)}catch(e){o.textContent='✗ '+errTxt(e)}
   $('cfst').textContent=aiLabel();$('cfst').className='pill '+(aiMode()?'ok':'w')};
- $('gsv').onclick=async()=>{AC.g=$('gk').value.trim();AC.gm=($('gmd').value.trim()||'gemini-2.5-flash');LSs('gk2',AC.g);LSs('gm2',AC.gm);const o=$('gfs');
+ $('glm').onclick=async()=>{const k=$('gk').value.trim(),o=$('gfs');if(!k){o.textContent='Cole a chave primeiro.';return}o.textContent='Consultando…';
+  try{const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=100',{headers:{'x-goog-api-key':k}});if(!r.ok){o.textContent='✗ HTTP '+r.status+(r.status===401?' — chave recusada pelo Google':'');return}
+   const j=await r.json(),l=(j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent')).map(m=>m.name.replace('models/','')).filter(n=>/^gemini/.test(n));
+   o.innerHTML='✓ Chave aceita. Modelos: '+l.slice(0,12).map(n=>'<button class="chip" type="button" data-m="'+esc(n)+'">'+esc(n)+'</button>').join(' ');
+   o.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{$('gmd').value=b.dataset.m;o.textContent='Modelo escolhido: '+b.dataset.m+'. Toque em Salvar e testar.'})}catch(e){o.textContent='✗ Sem conexão com o Google.'}};
+ $('gsv').onclick=async()=>{AC.g=$('gk').value.trim();const raw=$('gmd').value.trim();AC.gm=gmOk(raw);$('gmd').value=AC.gm;LSs('gk2',AC.g);LSs('gm2',AC.gm);const o=$('gfs');
   if(!AC.g){o.textContent='Cole a chave primeiro.';return}o.textContent='Testando…';
-  try{const r=await gem([{role:'user',content:'Responda apenas: ok'}],{max:20});o.textContent='✓ Funcionando: '+String(r.text).slice(0,30)}catch(e){o.textContent='✗ '+errTxt(e)}
+  try{const r=await gem([{role:'user',content:'Responda apenas: ok'}],{max:20});o.textContent='✓ Funcionando ('+AC.gm+'): '+String(r.text).slice(0,30)+(raw&&raw!==AC.gm?' · modelo inválido corrigido':'')}catch(e){o.textContent='✗ '+errTxt(e)}
   $('gst').textContent=AC.g?'chave salva':'sem chave';$('gst').className='pill '+(AC.g?'ok':'w');$('cfst').textContent=aiLabel()};
  $('grm').onclick=()=>{AC.g='';LSs('gk2','');$('gk').value='';$('gst').textContent='sem chave';$('gst').className='pill w';$('gfs').textContent='Chave removida deste aparelho.'}
  $('crm').onclick=()=>{AC.k='';LSs('ak2','');$('ck').value='';$('cfst').textContent=aiLabel();$('cfs').textContent='Chave removida deste aparelho.'}}
@@ -170,19 +180,3 @@ function drawLib(){const w=$('lib');if(!w)return;
  <button class="chip" id="lsc" type="button">\uD83E\uDDEE Escalas e calculadoras</button></div><div id="ll"></div>`;
  $('lseg').querySelectorAll('button').forEach(b=>b.onclick=()=>{LT=b.dataset.v;LQ='';drawLib()});
  $('lq').oninput=e=>{LQ=e.target.value;libList()};$('lsc').onclick=()=>showTab('t-fe');libList()}
-function libList(){const q=nz(LQ.trim()),tk=q.split(/\s+/).filter(Boolean),o=$('ll');let it=[];
- const hit=s=>{s=nz(s);return tk.every(x=>s.split(/[^a-z0-9]+/).some(y=>y.startsWith(x))||s.includes(x))};
- if(LT==='d')it=Object.keys(P).filter(k=>!tk.length||hit(k+' '+(KW[k]||''))).sort((a,b)=>a.localeCompare(b,'pt')).map(k=>({k,t:'d',s:[P[k].c?'\uD83D\uDC76':'',P[k].a?'\uD83E\uDDD1':'',LIB_()['d:'+k]?'\uD83D\uDCC4':''].join(' ')}));
- else if(LT==='m'){const D=drugIdx();it=Object.keys(D).filter(k=>!tk.length||hit(k)).sort((a,b)=>a.localeCompare(b,'pt')).map(k=>({k,t:'m',s:Object.keys(D[k].dx).length?Object.keys(D[k].dx).length+' uso(s)':'pediatria',l:LIB_()['m:'+k]?'\uD83D\uDCC4':''}))}
- else it=LS('notes2',[]).map((n,i)=>({k:i,t:'n',n})).filter(x=>!tk.length||hit(x.n.t+' '+x.n.txt));
- const mx=80;o.innerHTML=it.length?it.slice(0,mx).map((x,i)=>`<div class="lbi" data-i="${i}"><span><b>${esc(x.t==='n'?x.n.t:x.k)}</b></span><span class="fm">${esc(x.s||'')} ${x.l||''} ›</span></div>`).join('')+(it.length>mx?`<div class="fm">Mostrando ${mx} de ${it.length}: refine a busca.</div>`:''):'<div class="card fm">'+(LT==='n'?'Nenhuma nota. No chat da IA, use “Salvar nota” numa resposta.':'Nada encontrado.')+'</div>';
- o.querySelectorAll('.lbi').forEach(el=>el.onclick=()=>{const x=it[el.dataset.i];LSEL={t:x.t,k:x.k};drawLib();window.scrollTo(0,0)})}
-const LIB_=()=>LS('lib2',{});
-const libSet=(k,v)=>{const L=LIB_();L[k]=v;LSs('lib2',L);libPush(k,v)};
-function libGot(k,v){if(!v||!v.txt)return;const L=LIB_();if(!L[k]||(L[k].ts||0)<(v.ts||0)){L[k]=v;LSs('lib2',L)}}
-async function libPush(k,v){const c=sbCfg();if(!c.u||!c.k)return;try{await fetch(c.u+'/rest/v1/receitas',{method:'POST',headers:{...sbH(c.k),Prefer:'return=minimal'},body:JSON.stringify({chave:'lib:'+k,dados:{lib:true,txt:v.txt,ts:v.ts},rev:false})})}catch(e){}}
-function backBtn(){return'<button class="chip" id="lbk" type="button" style="margin:0 0 8px">‹ Voltar à biblioteca</button>'}
-function bindBack(){const b=$('lbk');if(b)b.onclick=()=>{LSEL=null;drawLib()}}
-async function libAI(key,prompt,after){const o=$('lai');o.innerHTML='<div class="fm">Gerando resumo com a IA…</div>';
- try{const r=await aiRaw([{role:'user',content:prompt}],{max:2000});libSet(key,{txt:r.text,ts:Date.now()});after()}catch(e){o.innerHTML='<div class="wn">⚠ '+esc(errTxt(e))+'</div>'}}
-function aiBlock(key){const v=LIB_()[key];return`<div class="sec"><b>Resumo (IA)</b><div id="lai">${v?`<div class="md">${md(v.txt)}</div><div class="fm">Gerado por IA em ${new Date(v.ts).toLocaleDateString('pt-BR')} — confira com a sua referência antes de usar.</div>`:'<div class="fm">Ainda não gerado.</div>'}</div><div class="row"><button class="chip" id="lgen" type="button">${v?'Atualizar resumo':'Gerar resumo com IA'}</button>${v?'<button class="chip" id="lcp" type="button">Copiar</button>':''}</div></div>`}

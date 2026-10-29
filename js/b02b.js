@@ -1,4 +1,20 @@
 
+function libList(){const q=nz(LQ.trim()),tk=q.split(/\s+/).filter(Boolean),o=$('ll');let it=[];
+ const hit=s=>{s=nz(s);return tk.every(x=>s.split(/[^a-z0-9]+/).some(y=>y.startsWith(x))||s.includes(x))};
+ if(LT==='d')it=Object.keys(P).filter(k=>!tk.length||hit(k+' '+(KW[k]||''))).sort((a,b)=>a.localeCompare(b,'pt')).map(k=>({k,t:'d',s:[P[k].c?'\uD83D\uDC76':'',P[k].a?'\uD83E\uDDD1':'',LIB_()['d:'+k]?'\uD83D\uDCC4':''].join(' ')}));
+ else if(LT==='m'){const D=drugIdx();it=Object.keys(D).filter(k=>!tk.length||hit(k)).sort((a,b)=>a.localeCompare(b,'pt')).map(k=>({k,t:'m',s:Object.keys(D[k].dx).length?Object.keys(D[k].dx).length+' uso(s)':'pediatria',l:LIB_()['m:'+k]?'\uD83D\uDCC4':''}))}
+ else it=LS('notes2',[]).map((n,i)=>({k:i,t:'n',n})).filter(x=>!tk.length||hit(x.n.t+' '+x.n.txt));
+ const mx=80;o.innerHTML=it.length?it.slice(0,mx).map((x,i)=>`<div class="lbi" data-i="${i}"><span><b>${esc(x.t==='n'?x.n.t:x.k)}</b></span><span class="fm">${esc(x.s||'')} ${x.l||''} ›</span></div>`).join('')+(it.length>mx?`<div class="fm">Mostrando ${mx} de ${it.length}: refine a busca.</div>`:''):'<div class="card fm">'+(LT==='n'?'Nenhuma nota. No chat da IA, use “Salvar nota” numa resposta.':'Nada encontrado.')+'</div>';
+ o.querySelectorAll('.lbi').forEach(el=>el.onclick=()=>{const x=it[el.dataset.i];LSEL={t:x.t,k:x.k};drawLib();window.scrollTo(0,0)})}
+const LIB_=()=>LS('lib2',{});
+const libSet=(k,v)=>{const L=LIB_();L[k]=v;LSs('lib2',L);libPush(k,v)};
+function libGot(k,v){if(!v||!v.txt)return;const L=LIB_();if(!L[k]||(L[k].ts||0)<(v.ts||0)){L[k]=v;LSs('lib2',L)}}
+async function libPush(k,v){const c=sbCfg();if(!c.u||!c.k)return;try{await fetch(c.u+'/rest/v1/receitas',{method:'POST',headers:{...sbH(c.k),Prefer:'return=minimal'},body:JSON.stringify({chave:'lib:'+k,dados:{lib:true,txt:v.txt,ts:v.ts},rev:false})})}catch(e){}}
+function backBtn(){return'<button class="chip" id="lbk" type="button" style="margin:0 0 8px">‹ Voltar à biblioteca</button>'}
+function bindBack(){const b=$('lbk');if(b)b.onclick=()=>{LSEL=null;drawLib()}}
+async function libAI(key,prompt,after){const o=$('lai');o.innerHTML='<div class="fm">Gerando resumo com a IA…</div>';
+ try{const r=await aiRaw([{role:'user',content:prompt}],{max:2000});libSet(key,{txt:r.text,ts:Date.now()});after()}catch(e){o.innerHTML='<div class="wn">⚠ '+esc(errTxt(e))+'</div>'}}
+function aiBlock(key){const v=LIB_()[key];return`<div class="sec"><b>Resumo (IA)</b><div id="lai">${v?`<div class="md">${md(v.txt)}</div><div class="fm">Gerado por IA em ${new Date(v.ts).toLocaleDateString('pt-BR')} — confira com a sua referência antes de usar.</div>`:'<div class="fm">Ainda não gerado.</div>'}</div><div class="row"><button class="chip" id="lgen" type="button">${v?'Atualizar resumo':'Gerar resumo com IA'}</button>${v?'<button class="chip" id="lcp" type="button">Copiar</button>':''}</div></div>`}
 function disDet(k){const w=$('lib'),f=(FAM.find(x=>x[0].test(k))||[])[1],c=getCl(k,f),pk=P[k];
  let h=backBtn()+`<div class="card"><h3 style="margin:0 0 6px">${esc(k)}</h3>${pk.c?'<span class="pill ok">\uD83D\uDC76 criança</span>':''}${pk.a?'<span class="pill ok">\uD83E\uDDD1 adulto</span>':''}${BK[k]?`<span class="pill ${BK[k].rev?'ok':'w'}">${BK[k].rev?'revisado':'gerado por IA, não revisado'}</span>`:''}
  <div class="row"><button id="luse" type="button" style="margin:0">Usar na receita</button><button class="chip" id="lask" type="button" style="margin:0">Perguntar à IA</button></div>`;
