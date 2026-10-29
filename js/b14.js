@@ -18,6 +18,7 @@ st.textContent=`#cpan .cpn{border-color:var(--ac);padding:12px}#cpan h3{margin:0
 #cpan .rxv{border-radius:10px;margin-top:8px;overflow:auto}#cpan .rxv .rb,#cpan .rxv .rb2{font-size:13px}
 #cpan .cpb,#cimg .cpb{margin:8px 8px 0 0;padding:9px 13px;font-size:13px}
 #cpan .alb,#cimg .alb,#csug .alb{border:1px solid var(--wn);border-radius:10px;padding:8px 10px;margin-top:8px;color:var(--wn);font-size:13px}#cpan .alb div,#cimg .alb div,#csug .alb div{margin:2px 0}
+#cpan .pnav{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}#cpan .pnav .chip{margin:0;padding:7px 11px;font-size:13px}#cpan .pnav .chip.on{border-color:var(--ac);color:var(--ac);font-weight:700}
 #cpan .hd2{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}#cpan .hd2 .chip{margin:0;flex:none}
 .imt{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.imt figure{position:relative;margin:0;width:92px;height:92px;border-radius:10px;overflow:hidden;border:1px solid var(--bd);background:var(--in)}
 .imt img{width:100%;height:100%;object-fit:cover;display:block}.imt button{position:absolute;top:3px;right:3px;margin:0;padding:1px 8px;font-size:13px;border-radius:99px;background:rgba(0,0,0,.65);color:#fff}
@@ -243,6 +244,9 @@ function panelHtml(k){
  if(cl.auto)tags.push('<span class="pill w">roteiro padrão (sem conduta detalhada)</span>');
  let h='<div class="card cpn"><div class="hd2"><div><h3>\uD83E\uDE7A '+E(k)+'</h3><div class="fm">'+tags.join('')+'</div></div><button class="chip" type="button" data-pa="close" aria-label="Fechar painel">✕</button></div>';
  h+='<div class="fm" style="margin-top:4px">Paciente: <b>'+E(patLine())+'</b> · Alergias: <b>'+E(algTxt())+'</b></div>';
+ {const on=Object.keys(PAN.sec).filter(x=>PAN.sec[x]),one=on.length===1?on[0]:'',all=on.length>=4;
+  const nb=(s,t)=>'<button type="button" class="chip'+((s==='all'?all:s===one)?' on':'')+'" data-pa="go" data-s="'+s+'">'+t+'</button>';
+  h+='<div class="pnav">'+nb('cond','Conduta')+nb('int','Internar × casa')+nb('hosp','\uD83C\uDFE5 Hospital')+nb('casa','\uD83C\uDFE0 Casa')+nb('all','Tudo')+'</div>'}
  let H=null,Cc=null;
  if(ty.mismatch){h+='<div class="alb"><div>⚠ Paciente '+(ty.want==='c'?'criança':'adulto')+', mas este protocolo só tem modelo '+(ty.want==='c'?'de adulto':'pediátrico')+'. As doses não foram calculadas para evitar erro de faixa etária.</div><div><button class="chip" type="button" data-pa="force" style="margin:4px 6px 0 0">Ver o modelo mesmo assim (só referência)</button><button class="chip" type="button" data-pa="ai" style="margin:4px 0 0">\uD83E\uDD16 Pedir à IA</button></div></div>'}
  else{
@@ -288,6 +292,8 @@ window.condOpen=(k,sec,quiet)=>{if(!P[k])return;
  if(!quiet)setTimeout(()=>{const b=g('cpan');if(b&&b.scrollIntoView)b.scrollIntoView({behavior:'smooth',block:'start'})},60)};
 function panelClick(e){const b=e.target.closest('[data-pa]');if(!b)return;const a=b.dataset.pa;
  if(a==='tog')return;
+ if(a==='go'){const s=b.dataset.s;PAN.sec=s==='all'?{cond:1,int:1,hosp:1,casa:1}:{cond:+(s==='cond'),int:+(s==='int'),hosp:+(s==='hosp'),casa:+(s==='casa')};render();
+  const d=document.querySelector('#cpan details[data-sec="'+(s==='all'?'cond':s)+'"]');if(d&&d.scrollIntoView)setTimeout(()=>d.scrollIntoView({behavior:'smooth',block:'start'}),30);return}
  if(a==='close'){PAN.k=null;PAN.closedFor=z((g('chs')||{}).value||'');render();if(window.__sg16)window.__sg16();return}
  if(a==='alt'){const k=PAN.k,ty=pickType(k),m=P[k][ty.t][+b.dataset.i];PAN.ovr[okey(k,ty.t,m)]=true;render();return}
  if(a==='typ'){PAN.tov=b.dataset.v;render();return}
@@ -303,12 +309,12 @@ function panelChange(e){const b=e.target;
  if(b.id==='pau'){g('uso').value=b.value;g('uso').dispatchEvent(new Event('input',{bubbles:true}));PAN.safe=1;render();return}}
 function panelToggle(e){const d=e.target;if(d&&d.tagName==='DETAILS'&&d.dataset.sec){if(d.dataset.sec==='safe')PAN.safe=d.open?1:0;else PAN.sec[d.dataset.sec]=d.open?1:0}}
 /* ---------- foto / imagem do caso ---------- */
-const IM={list:[],busy:null,ocr:'',res:null,err:'',txt:'',ai:null};
+const IM={list:[],busy:null,ocr:'',res:null,err:'',txt:'',ai:null,cap:4};
 const ITYPES=[['','Detectar sozinho'],['lesao','Lesão de pele ou ferida'],['ecg','ECG'],['rx','Raio-X, tomografia ou ultrassom'],['exame','Exame de sangue, urina ou laudo (texto)'],['receita','Receita, bula ou caixa de remédio'],['garganta','Garganta, olho ou ouvido'],['outro','Outra imagem clínica']];
 const TNOME={lesao:'Lesão de pele / ferida',lesao_pele:'Lesão de pele',ferida:'Ferida',ecg:'ECG',radiografia:'Radiografia',rx:'Imagem radiológica',tomografia:'Tomografia',ultrassom:'Ultrassom',exame_laboratorial:'Exame laboratorial',exame:'Exame / laudo',laudo:'Laudo',receita:'Receita',embalagem:'Embalagem de medicamento',orofaringe:'Orofaringe',olho:'Olho',ouvido:'Ouvido',garganta:'Garganta / olho / ouvido',outro:'Outra imagem'};
 const VSYS='Você apoia um médico no Brasil (UBS, UPA/PS, plantão). Analise a(s) imagem(ns) clínica(s) enviada(s). Regras: (1) descreva apenas o que é visível e não invente achados; (2) você NÃO dá diagnóstico definitivo: liste hipóteses em ordem de probabilidade, com o que sustenta cada uma e o que falta para confirmar; (3) se a imagem for texto (exame, laudo, receita, caixa de remédio), transcreva fielmente os dados, com unidade, e aponte o que foge do esperado; (4) em ECG ou radiografia, descreva de forma sistemática e destaque achados críticos; (5) se a imagem estiver ruim, cortada ou não for clínica, diga isso em qualidade e limitações; (6) destaque sinais de alarme e urgência; (7) não identifique pessoas; (8) responda sempre em português do Brasil.';
 const imgOk=()=>LSg2('imc16')==='1';
-async function visionOK(){try{const m=aiMode();if(!m)return false;if(m==='sample'){if(!SAMPLE||!SAMPLE.limits)return false;const l=await SAMPLE.limits();return!!(l&&l.images)}return true}catch(e){return false}}
+async function visionOK(){try{IM.cap=4;const m=aiMode();if(!m)return false;if(m==='sample'){if(!SAMPLE||!SAMPLE.limits)return false;const l=await SAMPLE.limits();if(l&&l.images&&l.images.maxCount>0)IM.cap=Math.min(4,l.images.maxCount);return!!(l&&l.images)}return true}catch(e){return false}}
 const b64=blob=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]||'');r.onerror=()=>no(r.error);r.readAsDataURL(blob)});
 async function shrink(file){const MAX=1568;let bmp;
  try{bmp=await createImageBitmap(file,{imageOrientation:'from-image'})}catch(e){
@@ -321,10 +327,10 @@ async function shrink(file){const MAX=1568;let bmp;
  return{blob,url:URL.createObjectURL(blob),w,h,b64:await b64(blob),name:(file.name||'foto').slice(0,40)}}
 async function addFiles(files){const arr=[...files].filter(f=>/^image\//.test(f.type)||/\.(jpe?g|png|webp|gif|heic|heif)$/i.test(f.name||''));
  if(!arr.length){IM.err='Escolha um arquivo de imagem (foto).';renderImg();return}
- const room=4-IM.list.length;if(room<=0){IM.err='Máximo de 4 imagens por análise. Remova alguma antes.';renderImg();return}
+ await visionOK();const room=IM.cap-IM.list.length;if(room<=0){IM.err='Máximo de '+IM.cap+' imagem(ns) por análise. Remova alguma antes.';renderImg();return}
  IM.err='';IM.ocr='Preparando '+Math.min(arr.length,room)+' imagem(ns)…';renderImg();
  for(const f of arr.slice(0,room)){try{IM.list.push(await shrink(f))}catch(e){IM.err=(e&&e.message)||'Falha ao preparar a imagem.'}}
- if(arr.length>room)IM.err='Usei só as primeiras '+room+' imagens (máximo de 4).';
+ if(arr.length>room)IM.err='Usei só as primeiras '+room+' imagem(ns) (máximo de '+IM.cap+').';
  IM.ocr='';IM.res=null;IM.ai=await visionOK();renderImg()}
 function tipoSel(){const e=g('imt');return e?e.value:''}
 function buildPrompt(){const tipo=tipoSel(),qq=(g('imq')&&g('imq').value||'').trim(),hist=(g('chs')&&g('chs').value||'').trim().slice(0,600);
@@ -357,7 +363,7 @@ async function runAI(){if(IM.busy||!IM.list.length)return;
  catch(e){IM.err=visErr(e)}
  IM.busy=null;renderImg()}
 async function loadTess(){if(window.Tesseract)return window.Tesseract;
- await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>no({code:'Não foi possível carregar o leitor de texto (sem internet ou bloqueio do navegador).'});document.head.appendChild(s)});
+ await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>no({code:'Não foi possível carregar o leitor de texto (sem internet ou bloqueio do navegador). Use “Analisar com IA”: ela também lê e transcreve o texto da imagem.'});document.head.appendChild(s)});
  if(!window.Tesseract)throw{code:'Leitor de texto indisponível.'};return window.Tesseract}
 async function runOCR(){if(IM.busy||!IM.list.length)return;IM.busy=new AbortController();IM.err='';IM.ocr='Carregando o leitor de texto (1ª vez demora um pouco)…';renderImg();
  let w=null;
