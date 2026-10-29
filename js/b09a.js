@@ -31,7 +31,7 @@ T9('conv','⚡','Crise convulsiva','convulsão crise convulsiva status epileptic
  'Encaminhar à neuropediatria se crise afebril, focal, > 15 min, déficit neurológico ou < 6 meses.'
  ],r:['Crise > 5 min ou repetida','Rebaixamento de consciência','Febre alta com vômitos, rigidez de nuca ou petéquias'],rx:[]}});
 
-T9('asma','🫁','Crise de asma / broncoespasmo','asma crise broncoespasmo chiado salbutamol ipratrópio prednisolona magnésio sibilância',(w,a)=>{
+T9('asma','\uD83E\uDEC1','Crise de asma / broncoespasmo','asma crise broncoespasmo chiado salbutamol ipratrópio prednisolona magnésio sibilância',(w,a)=>{
  const j=cl(Math.round(w/3.5),2,10),ip=w<10?10:w<=20?20:40;
  return{h:[
  '#Conduta básica (RFOFOS/Albert Sabin 2026, André Ribeiro)',
@@ -55,7 +55,7 @@ T9('asma','🫁','Crise de asma / broncoespasmo','asma crise broncoespasmo chiad
  'Reavaliação na UBS em 48–72 h e plano de ação escrito.'
  ],r:['Falta de ar com dificuldade de falar, tiragem intercostal ou lábios arroxeados','Salbutamol sem alívio por 4 h','Sonolência, exaustão, tórax "silencioso"'],rx:['Asma moderada — crise moderada','Asma grave — crise grave (PS)']}});
 
-T9('crupe','🐕','Crupe / laringite (estridor)','crupe laringite estridor tosse rouca dexametasona adrenalina nebulização budesonida',(w,a)=>({h:[
+T9('crupe','\uD83D\uDC15','Crupe / laringite (estridor)','crupe laringite estridor tosse rouca dexametasona adrenalina nebulização budesonida',(w,a)=>({h:[
  '#Conduta',
  'Manter a criança calma (no colo); evitar exame de orofaringe se suspeita de epiglotite. O₂ umidificado se SatO₂ < 94%. Classificar: Westley (ver Ferramentas).',
  'Dexametasona 0,15–0,6 mg/kg dose única VO/IM/EV = '+f1(Math.min(w*0.15,10))+'–'+f1(Math.min(w*0.6,10))+' mg (máx. 10 mg; 0,6 mg/kg nos casos moderados/graves). Macete (4 mg/mL): peso × 0,15 mL IM puro.',
@@ -67,7 +67,7 @@ T9('crupe','🐕','Crupe / laringite (estridor)','crupe laringite estridor tosse
  'Ambiente calmo, hidratação, antitérmico se febre. Evitar medicamentos para tosse.'
  ],r:['Estridor em repouso, tiragem, cianose','Salivação intensa com recusa de engolir (suspeitar epiglotite)','Sonolência ou prostração']}));
 
-T9('anafi','🐝','Anafilaxia','anafilaxia alergia grave adrenalina choque anafilático urticária edema glote',(w,a)=>({h:[
+T9('anafi','\uD83D\uDC1D','Anafilaxia','anafilaxia alergia grave adrenalina choque anafilático urticária edema glote',(w,a)=>({h:[
  '#Conduta imediata (não atrasar a adrenalina)',
  'Adrenalina IM (1 mg/mL, sem diluir) 0,01 mg/kg = '+f2(Math.min(w*0.01,0.5))+' mg = '+f2(Math.min(w*0.01,0.5))+' mL no vasto lateral da coxa (macete: peso ÷ 100 mL). Máx. 0,5 mg (RFOFOS) — o e-book do Dr. Caíque usa 0,3 mg. Repetir a cada 5–15 min até 3x. Dose fixa: < 6 m 0,1–0,15 mg; 6 m–6 a 0,15 mg; 6–12 a 0,3 mg; > 12 a 0,5 mg.',
  'Deitar com pernas elevadas, O₂ 100%, 2 acessos, monitor. Cristaloide (SF/Ringer) 20 mL/kg = '+f0(w*20)+' mL em bolus se hipotensão, repetindo se necessário.',
@@ -81,7 +81,7 @@ T9('anafi','🐝','Anafilaxia','anafilaxia alergia grave adrenalina choque anafi
  'Encaminhar ao alergologista; considerar adrenalina autoinjetável e plano de ação por escrito.'
  ],r:['Falta de ar, rouquidão, edema de lábios/língua','Tontura, palidez, desmaio','Vômitos repetidos com urticária']}));
 
-T9('hipog','🍬','Hipoglicemia','hipoglicemia glicemia baixa glicose glucagon vig soro glicosado',(w,a)=>({h:[
+T9('hipog','\uD83C\uDF6C','Hipoglicemia','hipoglicemia glicemia baixa glicose glucagon vig soro glicosado',(w,a)=>({h:[
  '#Conduta (< 60 mg/dL ou sintomas)',
  'Consciente e deglutindo: 15 g de carboidrato VO (suco, açúcar), repetir glicemia em 15 min.',
  'Inconsciente/convulsão: SG 25% 2–4 mL/kg = '+f0(w*2)+'–'+f0(w*4)+' mL EV (0,5–1 g/kg) — em veia periférica diluir a 12,5% — ou SG 10% 5 mL/kg = '+f0(w*5)+' mL. Sem acesso: glucagon IM '+(w<25?'0,5':'1')+' mg.',
@@ -93,7 +93,7 @@ T9('hipog','🍬','Hipoglicemia','hipoglicemia glicemia baixa glicose glucagon v
  'Diabético em insulina: diário de glicemias e kit de glucagon quando prescrito.'
  ],r:['Sonolência, convulsão ou não acordar bem','Glicemia repetidamente < 70 mg/dL','Vômitos que impedem alimentação']}));
 
-T9('gast','💧','Diarreia e desidratação (planos A, B, C)','diarreia vômitos desidratação gastroenterite sro soro reidratação oral zinco ondansetrona plano a b c geca',(w,a)=>({h:[
+T9('gast','\uD83D\uDCA7','Diarreia e desidratação (planos A, B, C)','diarreia vômitos desidratação gastroenterite sro soro reidratação oral zinco ondansetrona plano a b c geca',(w,a)=>({h:[
  '#Avaliar hidratação',
  'Plano A (sem desidratação): hidratar em casa. Plano B (sede, olhos fundos, turgor diminuído, irritado): SRO supervisionada. Plano C (letárgico, não bebe, pulsos fracos, turgor muito diminuído): EV.',
  'Plano B — SRO 50–100 mL/kg em 4–6 h = '+f0(w*50)+'–'+f0(w*100)+' mL, em pequenos volumes frequentes (colher/seringa); reavaliar a cada hora. Se vomitar, esperar 10 min e recomeçar mais devagar.',
@@ -113,7 +113,7 @@ T9('gast','💧','Diarreia e desidratação (planos A, B, C)','diarreia vômitos
  'Sem antidiarreicos (loperamida). Antibiótico só se disenteria (sangue/muco com febre).'
  ],r:['Muita sede, olhos fundos, boca seca, sem urinar > 6 h','Vômitos repetidos que impedem tomar o soro','Sangue nas fezes, febre alta persistente, barriga muito dolorida','Sonolência, irritabilidade excessiva, recusa de líquidos'],rx:['Gastroenterite — sem sangue (hidratação + antiemético)','Gastroenterite — completa (SRO + zinco + probiótico)']}));
 
-T9('hv','🩸','Hidratação venosa de manutenção (soro)','hidratação venosa manutenção holliday segar soro sg sf sgf potássio sódio tig vig hv',(w,a)=>{
+T9('hv','\uD83E\uDE78','Hidratação venosa de manutenção (soro)','hidratação venosa manutenção holliday segar soro sg sf sgf potássio sódio tig vig hv',(w,a)=>{
  const v=hol(w),pc=v/100;
  return{h:[
  '#Volume (Holliday-Segar): '+f0(v)+' mL/dia = '+f1(v/24)+' mL/h',
@@ -126,7 +126,7 @@ T9('hv','🩸','Hidratação venosa de manutenção (soro)','hidratação venosa
  'Monitorar peso, diurese, Na⁺ e glicemia a cada 12–24 h; reavaliar a necessidade da via EV diariamente.'
  ],c:['Retomar via oral assim que possível; oferecer líquidos fracionados.'],r:['Diurese diminuída, prostração, vômitos'],rx:[]}});
 
-T9('bvia','👶','Bronquiolite viral aguda (lactente)','bronquiolite vsr lactente sibilância viral aspiração nasal oxigênio nirsevimabe',(w,a)=>({h:[
+T9('bvia','\uD83D\uDC76','Bronquiolite viral aguda (lactente)','bronquiolite vsr lactente sibilância viral aspiração nasal oxigênio nirsevimabe',(w,a)=>({h:[
  '#Conduta (HMV / RFOFOS): suporte',
  'Lavagem nasal com SF 0,9% + aspiração das vias aéreas superiores; O₂ se SatO₂ < 92% persistente (RFOFOS: manter > 94%); cabeceira elevada.',
  'Hidratação/alimentação: fracionar a dieta; se não suporta VO, sonda ou SF 0,9% + glicose com volume de manutenção ('+f0(hol(w))+' mL/dia), evitando hiperhidratação.',
@@ -156,7 +156,7 @@ function cadTxt(w,pct){
  'Resolução: pH > 7,3, HCO₃ > 18, glicemia < 200. 1 h antes de pausar a bomba: insulina regular IM 0,05–0,1 UI/kg ('+f2(w*0.05)+'–'+f1(w*0.1)+' UI); depois dieta.'
  ];
 }
-T9('cad','🧪','Cetoacidose diabética (CAD)','cetoacidose diabética cad insulina diabetes cetonemia hiperglicemia potássio bomba',(w,a)=>({h:[
+T9('cad','\uD83E\uDDEA','Cetoacidose diabética (CAD)','cetoacidose diabética cad insulina diabetes cetonemia hiperglicemia potássio bomba',(w,a)=>({h:[
  '#CAD moderada (7%) — ajuste o % no calculador "CAD pediátrica" em Ferramentas',
  ...cadTxt(w,7),
  '#Insulinoterapia de transição (após resolução)',
@@ -168,7 +168,7 @@ T9('cad','🧪','Cetoacidose diabética (CAD)','cetoacidose diabética cad insul
  'Encaminhar à endocrinopediatria em < 1 semana; nutrição; vacinação em dia.'
  ],r:['Sede intensa, urinar muito, hálito cetônico, dor abdominal, vômitos','Respiração rápida e profunda, sonolência','Glicemia > 250 com cetonas positivas']}));
 
-T9('sepse','🔥','Sepse / choque séptico','sepse choque séptico bolus cristaloide antibiótico adrenalina vasoativa sirs febre',(w,a)=>({h:[
+T9('sepse','\uD83D\uDD25','Sepse / choque séptico','sepse choque séptico bolus cristaloide antibiótico adrenalina vasoativa sirs febre',(w,a)=>({h:[
  '#Reconhecimento: SIRS + foco infeccioso presumido (Phoenix não é triagem). Antibiótico em até 1 h (choque) / 3 h (sepse); hemocultura antes, sem atrasar.',
  'Expansão: SF 0,9% ou Ringer lactato 10–20 mL/kg ('+f0(w*10)+'–'+f0(w*20)+' mL) em 5–20 min, reavaliando após cada bolus. Máx. 40 mL/kg ('+f0(w*40)+' mL) sem UTI; até 60 mL/kg ('+f0(w*60)+' mL) com UTI garantida. Parar se hepatomegalia, crepitações, esforço respiratório.',
  'Sem resposta: vasoativo precoce (pode ser periférico) — adrenalina 0,05–0,3 mcg/kg/min (choque frio) ou noradrenalina (choque quente). POCUS ajuda a distinguir o tipo de choque.',
@@ -180,7 +180,7 @@ T9('sepse','🔥','Sepse / choque séptico','sepse choque séptico bolus cristal
  'Febre em < 3 meses ou toxemia: sempre avaliar em hospital.'
  ],r:['Prostração, gemência, palidez/moteado, extremidades frias','Respiração rápida, sonolência','Manchas roxas na pele (petéquias)','Diurese reduzida']}));
 
-T9('hipk','🧂','Hipercalemia e urgência dialítica','hipercalemia potássio gluconato cálcio insulina glicose salbutamol sorcal diálise aeiou',(w,a)=>({h:[
+T9('hipk','\uD83E\uDDC2','Hipercalemia e urgência dialítica','hipercalemia potássio gluconato cálcio insulina glicose salbutamol sorcal diálise aeiou',(w,a)=>({h:[
  '#Hipercalemia (fluxo UPA: emergência se sintomas/ECG alterado ou K > 6,5)',
  'Doses pediátricas de referência (o fluxo da UPA não traz doses): monitor cardíaco e ECG.',
  '1) Estabilizar a membrana: gluconato de cálcio 10% 0,5–1 mL/kg = '+f1(w*0.5)+'–'+f1(Math.min(w,20))+' mL EV em 5–10 min (máx. 20 mL); repetir em 5 min se persistir.',

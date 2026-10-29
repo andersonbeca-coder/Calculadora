@@ -263,7 +263,7 @@ function analyze(list){
  return{out,unk:d.filter(x=>!x.c.length).map(x=>x.n)}}
 window.analyzeIX=analyze;
 function drawIX(b){
- b.innerHTML=`<div class="card"><b>💊 Interações medicamentosas</b><div class="fm" style="margin:4px 0 8px">Adicione até 10 medicamentos (ou use a receita atual). O app cruza as classes e mostra a gravidade e a conduta.</div>
+ b.innerHTML=`<div class="card"><b>\uD83D\uDC8A Interações medicamentosas</b><div class="fm" style="margin:4px 0 8px">Adicione até 10 medicamentos (ou use a receita atual). O app cruza as classes e mostra a gravidade e a conduta.</div>
  <input id="ixi" autocomplete="off" placeholder="Digite o nome: varfarina, ibuprofeno, fluoxetina…"><div id="ixs"></div><div id="ixl" style="margin-top:6px"></div>
  <div class="row"><button class="chip" id="ixr" type="button" style="margin:0">Trazer da receita atual</button><button class="chip" id="ixu" type="button" style="margin:0">Trazer do uso contínuo</button><button class="chip" id="ixc" type="button" style="margin:0">Limpar</button></div></div><div id="ixo"></div>`;
  const add=n=>{n=n.trim();if(!n||IX.length>=10||IX.some(x=>nz(x)===nz(n)))return;IX.push(n);svIX();draw()};
@@ -289,7 +289,7 @@ function drawIX(b){
  $('ixu').onclick=()=>{String($('uso').value||'').split(/[,;\n]| e /).forEach(x=>add(x.replace(/\d+\s*(mg|mcg|g|ml|ui)\b.*$/i,'').replace(/\s+\d.*$/,'')));draw()};
  $('ixc').onclick=()=>{IX=[];svIX();draw()};
  draw()}
-SCALES.interac={n:'💊 Interações medicamentosas (até 10 remédios)',kw:'interação medicamentosa interações drogas remédios varfarina aine ieca qt serotonina lítio digoxina estatina',custom:drawIX,ref:[]};
+SCALES.interac={n:'\uD83D\uDC8A Interações medicamentosas (até 10 remédios)',kw:'interação medicamentosa interações drogas remédios varfarina aine ieca qt serotonina lítio digoxina estatina',custom:drawIX,ref:[]};
 const _os=openScale;
 openScale=function(id){const s=SCALES[id];if(s&&s.custom){s.custom($('scr'));return}return _os(id)};
 })();

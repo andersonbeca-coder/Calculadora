@@ -19,7 +19,7 @@ SCALES.hvtig={n:'Hidratação venosa com TIG (SG 5% + SG 50%)',kw:'hidratação 
  '<div><b>Em 2 etapas de 12 h:</b> '+tx.map(x=>x[0]+' '+L2(x[1])+' mL').join(' + ')+' + NaCl 20% '+L2(nacl)+' mL + KCl 10% '+L2(kcl)+' mL (≈ '+f1(tot/2)+' mL cada).</div>'+
  '<div>Velocidade: <b>'+f1(V/24)+' mL/h</b>. Glicose da solução final ≈ '+f1(g)+'%'+(g>12.5?' — <span class="wn">acima de 12,5%: exige acesso central</span>':' (periférico aceitável até 12,5%)')+'.</div>'+
  '<div class="fm">Baseado na planilha Calculo_HV (1 mg/kg/min de glicose = 1,44 g/kg/dia). Cálcio/magnésio à parte. Conferir antes de prescrever.</div></div>'}};
-SCALES.urgped={n:'Urgências pediátricas: guia rápido (aba Urgência)',kw:'urgência pediátrica guia rápido convulsão asma crupe anafilaxia hipoglicemia desidratação bronquiolite cetoacidose sepse hipercalemia hospital casa',ref:[['Guia rápido','Abra a aba 🚑 Urgência: cada tema tem conduta do hospital (soro e drogas por peso) e prescrição/orientações para casa. Também há a lista completa de doses por peso e as receitas-modelo.']]};
+SCALES.urgped={n:'Urgências pediátricas: guia rápido (aba Urgência)',kw:'urgência pediátrica guia rápido convulsão asma crupe anafilaxia hipoglicemia desidratação bronquiolite cetoacidose sepse hipercalemia hospital casa',ref:[['Guia rápido','Abra a aba \uD83D\uDE91 Urgência: cada tema tem conduta do hospital (soro e drogas por peso) e prescrição/orientações para casa. Também há a lista completa de doses por peso e as receitas-modelo.']]};
 
 /* ---------- novas receitas ---------- */
 const mk=(k,kw,o)=>{NP(k,kw,o);const s=$('pat');if(s&&![...s.options].some(x=>x.value===k))s.add(new Option(k,k))};

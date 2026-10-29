@@ -44,7 +44,7 @@ function MOD(w,ag){
  ['Exame físico normal — menina','Ao exame, BEG, normocorada, hidratada, ativa e reativa, afebril, anictérica, acianótica, eupneica, normotensa.\nAR: MV+ em AHT SRA\nAC: RCR2T BCNF SS\nOrofaringe: sem alterações\nOtoscopia: sem alterações\nAbdome: RHA+, plano, flácido, indolor à palpação superficial e profunda, timpanismo preservado\nExt: sem edemas e bem perfundidas']
  ];
 }
-T9('modelos','📋','Receitas-modelo prontas (arquivo rápido)','receitas modelo arquivo rápido thaíza síndrome gripal geca asma rinite impetigo urticária larva migrans otite mão pé boca varicela escabiose dengue exame físico',null,function(box,w){
+T9('modelos','\uD83D\uDCCB','Receitas-modelo prontas (arquivo rápido)','receitas modelo arquivo rápido thaíza síndrome gripal geca asma rinite impetigo urticária larva migrans otite mão pé boca varicela escabiose dengue exame físico',null,function(box,w){
  const ag=parseFloat($('uidade').value),M=MOD(w,ag);
  box.innerHTML=(w?'':'<div class="card wn">'+need+' Os números aparecem como ___ até lá.</div>')+'<div class="card"><div class="fm">Modelos do “Arquivo rápido” (Thaíza) com as doses por peso preenchidas (dipirona gotas = peso × 0,4; Hixizine/Polaramine/cefalexina = peso ÷ 4; prednisolona 1 mg/kg). Toque em copiar e cole na receita/prontuário.</div></div>'+M.map((m,i)=>'<div class="card ul"><b>'+esc(m[0])+'</b><div style="white-space:pre-wrap;margin-top:6px">'+esc(m[1])+'</div><button type="button" class="ucp" data-mc="'+i+'">Copiar</button></div>').join('');
  box.querySelectorAll('[data-mc]').forEach(b=>b.onclick=()=>{const t=M[+b.dataset.mc][0]+'\n'+M[+b.dataset.mc][1],old=b.textContent,done=()=>{b.textContent='Copiado ✓';setTimeout(()=>b.textContent=old,1400)};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,()=>{fb(t);done()});else{fb(t);done()}});
@@ -61,13 +61,13 @@ function sfState(){
 }
 function scan(text){
  const S=sfState(),t=nz(text),out=[];
- Object.keys(ALG).forEach(k=>{if(S.al.includes(k)){const m=t.match(new RegExp(ALG[k][1].source,'g'));if(m)out.push({s:3,m:'🚫 ALERGIA a '+ALG[k][0]+' marcada — este conteúdo cita: '+[...new Set(m)].join(', ')+'. NÃO prescrever.'})}});
+ Object.keys(ALG).forEach(k=>{if(S.al.includes(k)){const m=t.match(new RegExp(ALG[k][1].source,'g'));if(m)out.push({s:3,m:'\uD83D\uDEAB ALERGIA a '+ALG[k][0]+' marcada — este conteúdo cita: '+[...new Set(m)].join(', ')+'. NÃO prescrever.'})}});
  if(S.al.includes('pen')&&/cefalexina|cefaclor|cefadroxila|ceftriaxona|cefepime|cefalotina|ceftazidima|cefuroxima|cefazolina/.test(t))out.push({s:2,m:'⚠ Alergia a penicilina: cefalosporinas têm reação cruzada baixa (~2%), mas avalie o tipo de reação antes.'});
- S.outra.split(/[,;]/).map(x=>nz(x.trim())).filter(x=>x.length>3).forEach(x=>{if(t.includes(x))out.push({s:3,m:'🚫 ALERGIA informada: "'+x+'" aparece neste conteúdo. NÃO prescrever.'})});
- if(S.gest){const m=t.match(new RegExp(GESTX.source,'g'));if(m)out.push({s:3,m:'🤰 GESTANTE: evitar/avaliar risco — '+[...new Set(m)].join(', ')+'.'})}
+ S.outra.split(/[,;]/).map(x=>nz(x.trim())).filter(x=>x.length>3).forEach(x=>{if(t.includes(x))out.push({s:3,m:'\uD83D\uDEAB ALERGIA informada: "'+x+'" aparece neste conteúdo. NÃO prescrever.'})});
+ if(S.gest){const m=t.match(new RegExp(GESTX.source,'g'));if(m)out.push({s:3,m:'\uD83E\uDD30 GESTANTE: evitar/avaliar risco — '+[...new Set(m)].join(', ')+'.'})}
  if(S.uso&&window.analyzeIX){
   const meds=S.uso.split(/[,;+]/).map(x=>x.trim()).filter(Boolean).slice(0,8),found=[...new Set((text.match(DN)||[]).map(x=>x.toLowerCase()))].slice(0,14);
-  meds.forEach(md=>found.forEach(d=>{try{const r=window.analyzeIX([md,d]);r.out.filter(o=>o.s>=2).forEach(o=>out.push({s:o.s,m:'💊 INTERAÇÃO: '+md+' + '+d+' — '+o.t}))}catch(e){}}))}
+  meds.forEach(md=>found.forEach(d=>{try{const r=window.analyzeIX([md,d]);r.out.filter(o=>o.s>=2).forEach(o=>out.push({s:o.s,m:'\uD83D\uDC8A INTERAÇÃO: '+md+' + '+d+' — '+o.t}))}catch(e){}}))}
  return out;
 }
 /* ---- barra global ---- */
@@ -80,8 +80,8 @@ $('sfp').innerHTML=fieldsHTML;
 function sfRefresh(){
  const S=sfState(),b=$('sfb');
  const known=S.al.length>0;
- const parts=[known?(S.nao?'Alergias: nenhuma':'Alergias: '+S.al.map(k=>(ALG[k]||[k])[0]).join(', ')+(S.outra?', '+S.outra:'')):'⚠ ALERGIAS NÃO INFORMADAS',S.gest?'🤰 Gestante':'Gestante: não',S.uso?'Em uso: '+S.uso:'Uso contínuo: não informado'];
- b.className=known?'ok':'bad';b.textContent='🛡 '+parts.join(' · ')+'  ▾';
+ const parts=[known?(S.nao?'Alergias: nenhuma':'Alergias: '+S.al.map(k=>(ALG[k]||[k])[0]).join(', ')+(S.outra?', '+S.outra:'')):'⚠ ALERGIAS NÃO INFORMADAS',S.gest?'\uD83E\uDD30 Gestante':'Gestante: não',S.uso?'Em uso: '+S.uso:'Uso contínuo: não informado'];
+ b.className=known?'ok':'bad';b.textContent='\uD83D\uDEE1 '+parts.join(' · ')+'  ▾';
  const bx=[...document.querySelectorAll('#sfal input')];bx.forEach(i=>{i.checked=S.al.includes(i.dataset.sf)});
  if($('sfalo')!==document.activeElement)$('sfalo').value=S.outra;if($('sfuso')!==document.activeElement)$('sfuso').value=S.uso;$('sfg').checked=S.gest;
 }
@@ -103,10 +103,10 @@ SCALES.viaalto={n:'⚠ Medicamentos de alto risco: via e conferência',kw:'alto 
 function baseUnit(n){return /glicose/i.test(n)?'g':/bicarbonato/i.test(n)?'mEq':'mg'}
 function perDoseMg(r,w){const[cat,n,ap,conc,lo,hi,mode,nd]=r,div=mode==='D'?nd:1;return{lo:w*lo/div,hi:w*hi/div}}
 const ROUTES=['VO','IM','EV','IO','SC','Intranasal','Retal','Inalatória'];
-T9('rotulo','🔍','Conferir pelo rótulo (dose x concentração)','rótulo concentração ampola frasco conferir dose volume adrenalina erro de dose via segurança dupla checagem',null,function(box,w){
+T9('rotulo','\uD83D\uDD0D','Conferir pelo rótulo (dose x concentração)','rótulo concentração ampola frasco conferir dose volume adrenalina erro de dose via segurança dupla checagem',null,function(box,w){
  const opts=DR.map((r,i)=>'<option value="'+i+'">'+esc(r[1]+' — '+r[2])+'</option>').join('');
  const keep=['rlbd','rlam','rlun','rlvo','rlvia','rlmg','rlmx','rllo','rlhi','rlvol'].reduce((o,k)=>{const e=box.querySelector('#'+k);if(e)o[k]=e.value;return o},{});
- box.innerHTML='<div class="card"><b>🔍 Conferir pelo rótulo</b><div class="fm" style="margin:4px 0 8px">Com a ampola/frasco na mão: informe o que está escrito no rótulo e o app diz quanto aspirar. Ele compara com a apresentação de referência e avisa se a concentração for diferente ou se a via estiver errada.</div>'+
+ box.innerHTML='<div class="card"><b>\uD83D\uDD0D Conferir pelo rótulo</b><div class="fm" style="margin:4px 0 8px">Com a ampola/frasco na mão: informe o que está escrito no rótulo e o app diz quanto aspirar. Ele compara com a apresentação de referência e avisa se a concentração for diferente ou se a via estiver errada.</div>'+
  (w?'':'<div class="alrt">Informe o peso lá em cima antes de conferir.</div>')+
  '<label>Medicamento</label><select id="rlbd"><option value="">— escolha —</option>'+opts+'<option value="x">Outro (digitar dose por kg)</option></select><div id="rlx" hidden><div class="grid"><div><label>Dose mín (mg/kg)</label><input id="rllo" type="number" step="any" inputmode="decimal"></div><div><label>Dose máx (mg/kg)</label><input id="rlhi" type="number" step="any" inputmode="decimal"></div></div></div>'+
  '<label>Rótulo: quantidade</label><div class="grid"><div><input id="rlam" type="number" step="any" inputmode="decimal" placeholder="ex.: 1"></div><div><select id="rlun"><option>mg</option><option>mcg</option><option>g</option><option>mEq</option><option>% (p/v)</option></select></div></div>'+
@@ -138,12 +138,12 @@ T9('rotulo','🔍','Conferir pelo rótulo (dose x concentração)','rótulo conc
   if(b!=='x'){
    const rr=[...iv.matchAll(/\b(VO|IM|EV|IO|SC|retal|intranasal|inalat)/gi)].map(m=>m[1].toUpperCase());
    if(rr.length&&!rr.some(x=>x.startsWith(via.toUpperCase().slice(0,3))))h+='<div class="alrt">⚠ A via escolhida ('+via+') não está entre as vias da fonte ('+esc(iv)+'). Confira antes de aplicar.</div>';
-   if(/Adrenalina IM/.test(name)&&via!=='IM')h+='<div class="alrt">🚫 PARE: adrenalina 1 mg/mL na anafilaxia é INTRAMUSCULAR. Por EV só diluída 1:10 e apenas na PCR. Erro de via já causou mortes.</div>';
-   if(/Adrenalina na RCP/.test(name)&&conc>0.11)h+='<div class="alrt">🚫 PARE: a RCP usa adrenalina DILUÍDA 0,1 mg/mL (1 mL + 9 mL de SF). Sua concentração é '+fm(conc)+' mg/mL — dilua antes.</div>';
-   if(/Fenitoína/.test(name)&&(via==='IM'))h+='<div class="alrt">🚫 Fenitoína não pode ser IM.</div>';
-   if(/Diazepam/.test(name)&&via==='IM')h+='<div class="alrt">🚫 Diazepam não deve ser IM (absorção errática).</div>';
-   if(/Penicilina/.test(name)&&via==='EV')h+='<div class="alrt">🚫 Penicilina benzatina NUNCA por EV.</div>';
-   if(/Ceftriaxona IM/.test(name)&&via==='EV')h+='<div class="alrt">🚫 Ceftriaxona IM (diluída em lidocaína) não pode ir por EV.</div>';
+   if(/Adrenalina IM/.test(name)&&via!=='IM')h+='<div class="alrt">\uD83D\uDEAB PARE: adrenalina 1 mg/mL na anafilaxia é INTRAMUSCULAR. Por EV só diluída 1:10 e apenas na PCR. Erro de via já causou mortes.</div>';
+   if(/Adrenalina na RCP/.test(name)&&conc>0.11)h+='<div class="alrt">\uD83D\uDEAB PARE: a RCP usa adrenalina DILUÍDA 0,1 mg/mL (1 mL + 9 mL de SF). Sua concentração é '+fm(conc)+' mg/mL — dilua antes.</div>';
+   if(/Fenitoína/.test(name)&&(via==='IM'))h+='<div class="alrt">\uD83D\uDEAB Fenitoína não pode ser IM.</div>';
+   if(/Diazepam/.test(name)&&via==='IM')h+='<div class="alrt">\uD83D\uDEAB Diazepam não deve ser IM (absorção errática).</div>';
+   if(/Penicilina/.test(name)&&via==='EV')h+='<div class="alrt">\uD83D\uDEAB Penicilina benzatina NUNCA por EV.</div>';
+   if(/Ceftriaxona IM/.test(name)&&via==='EV')h+='<div class="alrt">\uD83D\uDEAB Ceftriaxona IM (diluída em lidocaína) não pode ir por EV.</div>';
   }
   if(pl>0){const mgG=pl*conc,mgkg=mgG/w,lk=lo/w,hk=hi/w;let st,cls;
    if(mgG>hi*1.05){st='ACIMA da dose máxima: '+f1(mgG/hi)+'× o limite superior';cls='alrt'}else if(mgG<lo*0.95){st='abaixo da faixa (subdose, '+f1(mgG/lo)+'× o limite inferior)';cls='alrt w'}else{st='dentro da faixa';cls='alrt ok'}
@@ -158,16 +158,16 @@ T9('via','⚠','Alto risco: via e conferência','alto risco via erro adrenalina 
 function annotate(){
  const body=$('ubody');let all=[];
  const S=sfState();
- if(!S.al.length)body.insertAdjacentHTML('afterbegin','<div class="alrt">⚠ ALERGIAS NÃO INFORMADAS — pergunte ao paciente/responsável antes de prescrever (toque na barra 🛡 no topo).</div>');
+ if(!S.al.length)body.insertAdjacentHTML('afterbegin','<div class="alrt">⚠ ALERGIAS NÃO INFORMADAS — pergunte ao paciente/responsável antes de prescrever (toque na barra \uD83D\uDEE1 no topo).</div>');
  body.querySelectorAll('.card').forEach(c=>{if(c.querySelector('select,input'))return;const r=scan(c.innerText);if(!r.length)return;c.insertAdjacentHTML('afterbegin',r.slice(0,4).map(x=>'<div class="alrt'+(x.s<3?' w':'')+'">'+esc(x.m)+'</div>').join(''));all=all.concat(r)});
- if(all.some(x=>x.s>=3))body.insertAdjacentHTML('afterbegin','<div class="alrt">🚫 Há conflito de segurança (alergia/gestação/interação) em itens abaixo — leia os avisos vermelhos antes de usar.</div>');
+ if(all.some(x=>x.s>=3))body.insertAdjacentHTML('afterbegin','<div class="alrt">\uD83D\uDEAB Há conflito de segurança (alergia/gestação/interação) em itens abaixo — leia os avisos vermelhos antes de usar.</div>');
 }
 
 /* ---------- interface ---------- */
 const sec=document.createElement('section');sec.id='t-ur';sec.hidden=true;
-sec.innerHTML='<h2>🚑 Guia rápido de urgências pediátricas</h2><div class="card"><div class="grid"><div><label>Peso (kg)</label><input id="upeso" type="number" step="0.1" min="0" inputmode="decimal"></div><div><label>Idade (anos)</label><input id="uidade" type="number" step="0.1" min="0" inputmode="decimal"></div></div><div class="fm" style="margin-top:6px">Doses calculadas pelo peso em tempo real. Cada tema traz a conduta de <b>hospital/PS</b> (soro, medicações, observação) e a <b>prescrição + orientações para casa</b>. Fontes: Albert Sabin 2026, HMV, UPA, André Ribeiro, SPSP/JPED, Dr. Caíque, arquivo rápido; confirme sempre com o protocolo do seu serviço.</div></div><div id="uchips" style="margin:8px 0"></div><div id="ubody"></div>';
+sec.innerHTML='<h2>\uD83D\uDE91 Guia rápido de urgências pediátricas</h2><div class="card"><div class="grid"><div><label>Peso (kg)</label><input id="upeso" type="number" step="0.1" min="0" inputmode="decimal"></div><div><label>Idade (anos)</label><input id="uidade" type="number" step="0.1" min="0" inputmode="decimal"></div></div><div class="fm" style="margin-top:6px">Doses calculadas pelo peso em tempo real. Cada tema traz a conduta de <b>hospital/PS</b> (soro, medicações, observação) e a <b>prescrição + orientações para casa</b>. Fontes: Albert Sabin 2026, HMV, UPA, André Ribeiro, SPSP/JPED, Dr. Caíque, arquivo rápido; confirme sempre com o protocolo do seu serviço.</div></div><div id="uchips" style="margin:8px 0"></div><div id="ubody"></div>';
 const main=document.querySelector('main');main.insertBefore(sec,$('t-rx'));
-const nav=document.querySelector('.tabbar'),btn=document.createElement('button');btn.dataset.t='t-ur';btn.innerHTML='<span>🚑</span>Urgência';
+const nav=document.querySelector('.tabbar'),btn=document.createElement('button');btn.dataset.t='t-ur';btn.innerHTML='<span>\uD83D\uDE91</span>Urgência';
 const first=nav.querySelector('button[data-t="t-caso"]');nav.insertBefore(btn,first?first.nextSibling:nav.firstChild);btn.onclick=()=>showTab('t-ur');
 const st9=document.createElement('style');st9.textContent='.uc{margin:4px 4px 0 0;padding:7px 11px;border-radius:99px;border:1px solid var(--bd);background:var(--in);color:var(--tx);font-size:13px;font-weight:500}.uc.on{background:var(--ac);color:#fff;border-color:var(--ac)}:root:not([data-theme="light"]) .uc.on{color:#06201c}.ul div{margin:4px 0}.ul .h3{font-weight:700;margin-top:10px}.ucp{margin-top:8px;padding:7px 12px;font-size:13px}';document.head.appendChild(st9);
 function LSg(k){try{return localStorage.getItem(k)}catch(e){return null}}
@@ -184,8 +184,8 @@ function draw9(keepChips){
  if(t.r9){t.r9($('ubody'),w);annotate();return}
  const o=t.fn(w||0,ag);
  $('ubody').innerHTML=(w?'':'<div class="card wn">'+need+'</div>')+
- '<div class="card ul"><b>🏥 Hospital / PS — conduta e prescrição</b>'+lines(o.h)+'<button type="button" class="ucp" data-cp="h">Copiar conduta do hospital</button></div>'+
- '<div class="card ul"><b>🏠 Casa — prescrição e orientações</b>'+lines(o.c)+'<button type="button" class="ucp" data-cp="c">Copiar orientações de casa</button>'+((o.rx||[]).filter(k=>P[k]).map(k=>'<button type="button" class="ucp" data-rx9="'+esc(k)+'">Abrir receita: '+esc(k)+'</button>').join(' '))+'</div>'+
+ '<div class="card ul"><b>\uD83C\uDFE5 Hospital / PS — conduta e prescrição</b>'+lines(o.h)+'<button type="button" class="ucp" data-cp="h">Copiar conduta do hospital</button></div>'+
+ '<div class="card ul"><b>\uD83C\uDFE0 Casa — prescrição e orientações</b>'+lines(o.c)+'<button type="button" class="ucp" data-cp="c">Copiar orientações de casa</button>'+((o.rx||[]).filter(k=>P[k]).map(k=>'<button type="button" class="ucp" data-rx9="'+esc(k)+'">Abrir receita: '+esc(k)+'</button>').join(' '))+'</div>'+
  (o.r&&o.r.length?'<div class="card ul"><b>⚠ Retornar / procurar o PS se</b>'+o.r.map(x=>'<div>• '+esc(x)+'</div>').join('')+'<button type="button" class="ucp" data-cp="r">Copiar sinais de alerta</button></div>':'');
  annotate();
  $('ubody').querySelectorAll('[data-cp]').forEach(b=>b.onclick=()=>{const k=b.dataset.cp,txt=(k==='r'?'Retornar ao pronto-socorro se:\n'+o.r.map(x=>'- '+x).join('\n'):plain(o[k])),old=b.textContent;

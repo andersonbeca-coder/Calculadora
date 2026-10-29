@@ -118,7 +118,7 @@ SCALES.toxant={n:'Toxicologia: antídotos e condutas iniciais',kw:'toxicologia i
 /* ---------- atalhos na aba Ferramentas ---------- */
 const fe=$('t-fe'),h2=fe&&fe.querySelector('h2');
 if(fe&&h2){const q=document.createElement('div');q.className='card';q.innerHTML='<b>Acesso rápido</b><div style="margin-top:6px"></div>';
- [['interac','💊 Interações'],['labsang','🧪 Laboratório'],['labgaso','🩸 Gasometria'],['laburi','🚽 Urina'],['vaccri','💉 Vacina criança'],['vacadu','💉 Vacina adulto/gestante'],['toxant','☠️ Toxicologia']].forEach(x=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=x[1];b.onclick=()=>{openScale(x[0]);$('scr').scrollIntoView({behavior:'smooth'})};q.lastChild.appendChild(b)});
+ [['interac','\uD83D\uDC8A Interações'],['labsang','\uD83E\uDDEA Laboratório'],['labgaso','\uD83E\uDE78 Gasometria'],['laburi','\uD83D\uDEBD Urina'],['vaccri','\uD83D\uDC89 Vacina criança'],['vacadu','\uD83D\uDC89 Vacina adulto/gestante'],['toxant','☠️ Toxicologia']].forEach(x=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=x[1];b.onclick=()=>{openScale(x[0]);$('scr').scrollIntoView({behavior:'smooth'})};q.lastChild.appendChild(b)});
  h2.after(q)}
 if(typeof scList==='function')scList();
 })();

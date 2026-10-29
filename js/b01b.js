@@ -101,7 +101,7 @@ function safety(al){
     if(gest&&m.tg.includes('alb'))al.push(`${m.n}: contraindicado no 1º trimestre`);
     if(m.el&&m.blk){const e=m.el.querySelector('.cx');e.innerHTML+=(e.innerHTML?'<br>':'')+'⛔ '+m.blk}
   });
-  if(STK.length)sel.forEach(m=>{if(!inStk(m)){al.push(m.n+': não consta no estoque da unidade — veja alternativa');if(m.el){const e=m.el.querySelector('.cx');e.innerHTML+=(e.innerHTML?'<br>':'')+'📦 Não consta no estoque da unidade'}}});
+  if(STK.length)sel.forEach(m=>{if(!inStk(m)){al.push(m.n+': não consta no estoque da unidade — veja alternativa');if(m.el){const e=m.el.querySelector('.cx');e.innerHTML+=(e.innerHTML?'<br>':'')+'\uD83D\uDCE6 Não consta no estoque da unidade'}}});
   const ok=sel.filter(m=>!m.blk);
   Object.keys(NM).forEach(k=>{if(ok.filter(m=>m.tg.includes(k)).length>1)al.push('Duplicidade: mais de um medicamento de '+NM[k])});
   if(['pen','cef','mac','qui'].filter(k=>ok.some(m=>m.tg.includes(k))).length>1)al.push('Mais de um antibiótico selecionado: confirme se é intencional');
@@ -114,7 +114,7 @@ $("gest").onchange=upd;$("tipo").onchange=build;$("pat").onchange=build;
 $("idade").oninput=()=>{const a=parseFloat($("idade").value);if(!isNaN(a)){const t=a>=12?"a":"c";if($("tipo").value!==t){$("tipo").value=t;build();return}}upd()};
 let KEEP=false,STK=[];try{STK=JSON.parse(localStorage.getItem('stk')||'[]')}catch(e){}
 const saveStk=()=>{try{localStorage.setItem('stk',JSON.stringify(STK))}catch(e){}};
-const nz=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const nz=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const SW=['de','da','do','no','na','ao','em','com','dos','das','e'];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const inStk=m=>STK.some(s=>nz(s)===nz(m.n+' — '+m.f)||nz(s)===nz(m.n));
@@ -122,7 +122,7 @@ function suggest(q){let tk=nz(q).split(/[^a-z0-9]+/).filter(Boolean);if(tk.lengt
  return Object.keys(P).map(k=>{const nm=nz(k).split(/[^a-z0-9]+/),kw=nz(KW[k]||'').split(' '),all=nz(k+' '+(KW[k]||''));let s=0;
   tk.forEach(t=>{if(nm.some(w=>w.startsWith(t)))s+=3;else if(kw.some(w=>w.startsWith(t)))s+=2;else if(t.length>2&&all.includes(t))s+=1;else if(t.length>4&&nm.concat(kw).some(w=>w.length>3&&lev(w.slice(0,t.length+1),t)<=1))s+=1});return[k,s]}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,8).map(x=>x[0])}
 function showSug(){const q=$('q').value,r=suggest(q),sr=scSuggest(q),b=$('sug');
- b.innerHTML=(r.length||sr.length)?'<div class="fm">Possíveis diagnósticos/tratamentos e escalas — toque para escolher (confirme na avaliação clínica):</div>'+r.map((k,i)=>`<button class="chip" data-i="${i}">${esc(k)}${BK[k]?' ★':''}</button>`).join('')+sr.map(k=>`<button class="chip" data-s="${k}">📊 ${esc(SCALES[k].n)}</button>`).join(''):(q?'<div class="fm">Nada encontrado. Tente outra palavra ou use a IA.</div>':'');
+ b.innerHTML=(r.length||sr.length)?'<div class="fm">Possíveis diagnósticos/tratamentos e escalas — toque para escolher (confirme na avaliação clínica):</div>'+r.map((k,i)=>`<button class="chip" data-i="${i}">${esc(k)}${BK[k]?' ★':''}</button>`).join('')+sr.map(k=>`<button class="chip" data-s="${k}">\uD83D\uDCCA ${esc(SCALES[k].n)}</button>`).join(''):(q?'<div class="fm">Nada encontrado. Tente outra palavra ou use a IA.</div>':'');
  b.querySelectorAll('[data-i]').forEach(c=>c.onclick=()=>{const k=r[c.dataset.i];$('pat').value=k;$('q').value=k;b.innerHTML='';build()});
  b.querySelectorAll('[data-s]').forEach(c=>c.onclick=()=>{openScale(c.dataset.s);$('scr').scrollIntoView({behavior:'smooth'})})}
 $('q').oninput=showSug;

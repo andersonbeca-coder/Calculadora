@@ -79,10 +79,10 @@ const saveCh=()=>LSs('chat2',CH.slice(-40));
 function mkTurns(){const o=[];CH.forEach(m=>{if(m.role==='assistant'&&(!m.content||m.content.startsWith('⚠')))return;
   if(o.length&&o[o.length-1].role===m.role)o[o.length-1].content+='\n\n'+m.content;else o.push({role:m.role,content:m.content})});
  while(o.length&&o[0].role!=='user')o.shift();return o.slice(-20)}
-const QP=[['🩺 Diagnóstico diferencial do caso','Com os dados do paciente do app, liste o diagnóstico diferencial mais provável (do mais ao menos provável), o que perguntar/examinar para diferenciar e os sinais de alarme.'],
- ['💊 Conferir minha receita','Confira a receita atual do app: doses, intervalos, duração, alergias, gestação, interações e algo que falte. Aponte erros objetivamente.'],
- ['📋 Conduta completa','Qual a conduta completa para este caso (exames, tratamento ambulatorial x hospitalar, critérios de internação/encaminhamento e seguimento)?'],
- ['🗣️ Orientar o paciente','Escreva orientações simples e claras para o paciente/acompanhante levar para casa, incluindo sinais de alarme.'],
+const QP=[['\uD83E\uDE7A Diagnóstico diferencial do caso','Com os dados do paciente do app, liste o diagnóstico diferencial mais provável (do mais ao menos provável), o que perguntar/examinar para diferenciar e os sinais de alarme.'],
+ ['\uD83D\uDC8A Conferir minha receita','Confira a receita atual do app: doses, intervalos, duração, alergias, gestação, interações e algo que falte. Aponte erros objetivamente.'],
+ ['\uD83D\uDCCB Conduta completa','Qual a conduta completa para este caso (exames, tratamento ambulatorial x hospitalar, critérios de internação/encaminhamento e seguimento)?'],
+ ['\uD83D\uDDE3️ Orientar o paciente','Escreva orientações simples e claras para o paciente/acompanhante levar para casa, incluindo sinais de alarme.'],
  ['⚠️ Interações e contraindicações','Quais interações medicamentosas e contraindicações importantes devo checar neste caso, considerando os medicamentos em uso e a receita atual?']];
 function drawAI(){const w=$('aiw');
  w.innerHTML=`<div class="card"><div class="row" style="margin:0;justify-content:space-between"><span><b>Assistente de IA</b> <span class="pill ${aiMode()?'ok':'w'}" id="aist">${esc(aiLabel())}</span></span><button class="chip" id="aicf" type="button" style="margin:0">Configurar</button></div>
@@ -167,13 +167,13 @@ function drawLib(){const w=$('lib');if(!w)return;
  w.innerHTML=`<div class="card"><b>Biblioteca</b><div class="fm" style="margin:2px 0 8px">Doenças com conduta, doses, perguntas e orientações; medicamentos com apresentações e doses; resumos gerados pela IA ficam salvos aqui.</div>
  <div class="seg" id="lseg">${tabs.map(t=>`<button type="button" data-v="${t[0]}" class="${LT===t[0]?'on':''}">${t[1]}</button>`).join('')}</div>
  <input id="lq" autocomplete="off" style="margin-top:8px" placeholder="${LT==='d'?'Buscar doença ou sintoma (1ª letra)…':LT==='m'?'Buscar medicamento (1ª letra)…':'Buscar nas notas…'}" value="${esc(LQ)}">
- <button class="chip" id="lsc" type="button">🧮 Escalas e calculadoras</button></div><div id="ll"></div>`;
+ <button class="chip" id="lsc" type="button">\uD83E\uDDEE Escalas e calculadoras</button></div><div id="ll"></div>`;
  $('lseg').querySelectorAll('button').forEach(b=>b.onclick=()=>{LT=b.dataset.v;LQ='';drawLib()});
  $('lq').oninput=e=>{LQ=e.target.value;libList()};$('lsc').onclick=()=>showTab('t-fe');libList()}
 function libList(){const q=nz(LQ.trim()),tk=q.split(/\s+/).filter(Boolean),o=$('ll');let it=[];
  const hit=s=>{s=nz(s);return tk.every(x=>s.split(/[^a-z0-9]+/).some(y=>y.startsWith(x))||s.includes(x))};
- if(LT==='d')it=Object.keys(P).filter(k=>!tk.length||hit(k+' '+(KW[k]||''))).sort((a,b)=>a.localeCompare(b,'pt')).map(k=>({k,t:'d',s:[P[k].c?'👶':'',P[k].a?'🧑':'',LIB_()['d:'+k]?'📄':''].join(' ')}));
- else if(LT==='m'){const D=drugIdx();it=Object.keys(D).filter(k=>!tk.length||hit(k)).sort((a,b)=>a.localeCompare(b,'pt')).map(k=>({k,t:'m',s:Object.keys(D[k].dx).length?Object.keys(D[k].dx).length+' uso(s)':'pediatria',l:LIB_()['m:'+k]?'📄':''}))}
+ if(LT==='d')it=Object.keys(P).filter(k=>!tk.length||hit(k+' '+(KW[k]||''))).sort((a,b)=>a.localeCompare(b,'pt')).map(k=>({k,t:'d',s:[P[k].c?'\uD83D\uDC76':'',P[k].a?'\uD83E\uDDD1':'',LIB_()['d:'+k]?'\uD83D\uDCC4':''].join(' ')}));
+ else if(LT==='m'){const D=drugIdx();it=Object.keys(D).filter(k=>!tk.length||hit(k)).sort((a,b)=>a.localeCompare(b,'pt')).map(k=>({k,t:'m',s:Object.keys(D[k].dx).length?Object.keys(D[k].dx).length+' uso(s)':'pediatria',l:LIB_()['m:'+k]?'\uD83D\uDCC4':''}))}
  else it=LS('notes2',[]).map((n,i)=>({k:i,t:'n',n})).filter(x=>!tk.length||hit(x.n.t+' '+x.n.txt));
  const mx=80;o.innerHTML=it.length?it.slice(0,mx).map((x,i)=>`<div class="lbi" data-i="${i}"><span><b>${esc(x.t==='n'?x.n.t:x.k)}</b></span><span class="fm">${esc(x.s||'')} ${x.l||''} ›</span></div>`).join('')+(it.length>mx?`<div class="fm">Mostrando ${mx} de ${it.length}: refine a busca.</div>`:''):'<div class="card fm">'+(LT==='n'?'Nenhuma nota. No chat da IA, use “Salvar nota” numa resposta.':'Nada encontrado.')+'</div>';
  o.querySelectorAll('.lbi').forEach(el=>el.onclick=()=>{const x=it[el.dataset.i];LSEL={t:x.t,k:x.k};drawLib();window.scrollTo(0,0)})}

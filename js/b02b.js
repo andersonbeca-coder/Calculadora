@@ -1,8 +1,8 @@
 
 function disDet(k){const w=$('lib'),f=(FAM.find(x=>x[0].test(k))||[])[1],c=getCl(k,f),pk=P[k];
- let h=backBtn()+`<div class="card"><h3 style="margin:0 0 6px">${esc(k)}</h3>${pk.c?'<span class="pill ok">👶 criança</span>':''}${pk.a?'<span class="pill ok">🧑 adulto</span>':''}${BK[k]?`<span class="pill ${BK[k].rev?'ok':'w'}">${BK[k].rev?'revisado':'gerado por IA, não revisado'}</span>`:''}
+ let h=backBtn()+`<div class="card"><h3 style="margin:0 0 6px">${esc(k)}</h3>${pk.c?'<span class="pill ok">\uD83D\uDC76 criança</span>':''}${pk.a?'<span class="pill ok">\uD83E\uDDD1 adulto</span>':''}${BK[k]?`<span class="pill ${BK[k].rev?'ok':'w'}">${BK[k].rev?'revisado':'gerado por IA, não revisado'}</span>`:''}
  <div class="row"><button id="luse" type="button" style="margin:0">Usar na receita</button><button class="chip" id="lask" type="button" style="margin:0">Perguntar à IA</button></div>`;
- [['c','👶 Tratamento — criança'],['a','🧑 Tratamento — adulto']].forEach(([t,tt])=>{if(!pk[t])return;h+=`<div class="sec"><b>${tt}</b>`+pk[t].map(m=>`<div style="margin-bottom:6px"><b>${esc(m.n)}</b> <span class="fm">${esc(m.f)}${m.off?' · alternativa':''}</span><div class="fm">${esc(dtx(m,t))}${m.nt?' — '+esc(m.nt):''}</div></div>`).join('')+'</div>'});
+ [['c','\uD83D\uDC76 Tratamento — criança'],['a','\uD83E\uDDD1 Tratamento — adulto']].forEach(([t,tt])=>{if(!pk[t])return;h+=`<div class="sec"><b>${tt}</b>`+pk[t].map(m=>`<div style="margin-bottom:6px"><b>${esc(m.n)}</b> <span class="fm">${esc(m.f)}${m.off?' · alternativa':''}</span><div class="fm">${esc(dtx(m,t))}${m.nt?' — '+esc(m.nt):''}</div></div>`).join('')+'</div>'});
  if(pk.nt&&pk.nt.length)h+='<div class="sec"><b>Atenção</b>'+pk.nt.map(x=>`<div class="wn">⚠ ${esc(x)}</div>`).join('')+'</div>';
  if(c){if(c.q&&c.q.length)h+='<div class="sec"><b>Perguntas ao paciente</b><ul>'+c.q.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul></div>';
   (c.sc||[]).forEach(s=>{h+=`<div class="sec"><b>Escala: ${esc(s.n)}</b><ul>${s.it.map(i=>`<li>${esc(i[0])} (${i[1]})</li>`).join('')}</ul><div class="fm">${s.fx.map(x=>`≥ ${x[0]}: ${esc(x[1])}`).join('<br>')}</div></div>`});
@@ -17,8 +17,8 @@ function disDet(k){const w=$('lib'),f=(FAM.find(x=>x[0].test(k))||[])[1],c=getCl
 function drugDet(n){const w=$('lib'),d=drugIdx()[n];if(!d){LSEL=null;return drawLib()}
  let h=backBtn()+`<div class="card"><h3 style="margin:0 0 6px">${esc(n)}</h3>`;
  const pr=Object.values(d.pr);
- h+='<div class="sec"><b>Apresentações e doses nos protocolos do app</b>'+(pr.length?pr.map(x=>{if(x.pc){const p=x.pc;return`<div style="margin-bottom:6px"><span class="pill">👶 criança</span> <b>${esc(p[1])}</b><div class="fm">${p[3]} mg/kg/dose, ${p[4]}/${p[4]} h por ${p[5]} dia(s)${p[8]?' — '+esc(p[8]):''}</div></div>`}
-  const m=x.m;return`<div style="margin-bottom:6px"><span class="pill">${x.t==='c'?'👶 criança':'🧑 adulto'}</span> <b>${esc(m.f)}</b><div class="fm">${esc(dtx(m,x.t))}${m.nt?' — '+esc(m.nt):''}</div></div>`}).join(''):'<div class="fm">Sem modelo no app.</div>')+'</div>';
+ h+='<div class="sec"><b>Apresentações e doses nos protocolos do app</b>'+(pr.length?pr.map(x=>{if(x.pc){const p=x.pc;return`<div style="margin-bottom:6px"><span class="pill">\uD83D\uDC76 criança</span> <b>${esc(p[1])}</b><div class="fm">${p[3]} mg/kg/dose, ${p[4]}/${p[4]} h por ${p[5]} dia(s)${p[8]?' — '+esc(p[8]):''}</div></div>`}
+  const m=x.m;return`<div style="margin-bottom:6px"><span class="pill">${x.t==='c'?'\uD83D\uDC76 criança':'\uD83E\uDDD1 adulto'}</span> <b>${esc(m.f)}</b><div class="fm">${esc(dtx(m,x.t))}${m.nt?' — '+esc(m.nt):''}</div></div>`}).join(''):'<div class="fm">Sem modelo no app.</div>')+'</div>';
  const ks=Object.keys(d.dx);if(ks.length)h+='<div class="sec"><b>Usado em</b>'+ks.sort().map(k=>`<button class="chip" data-d="${esc(k)}" type="button">${esc(k)}</button>`).join('')+'</div>';
  const tgs=[];pr.forEach(x=>{if(x.m)tg(x.m).forEach(t=>{if(!tgs.includes(t))tgs.push(t)})});
  const CAP={pen:'penicilina',cef:'cefalosporina',dip:'dipirona',aine:'AINE (evitar na gestação, desidratação e com anticoagulante)',mac:'macrolídeo (QT)',qui:'quinolona (QT, tendinopatia)',mtz:'metronidazol (álcool)',ond:'ondansetrona (QT)',met:'metoclopramida',cort:'corticoide',dexc:'anti-histamínico sedativo',cicl:'relaxante muscular',alb:'antiparasitário'};
