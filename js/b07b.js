@@ -59,7 +59,6 @@ D('Micose superficial (tinha)','Micose',4,{dur:'c'},{plc:5,pru:4});
 D('Escabiose','',3,{},{prun:5,pru:5,cont:3});
 D('Urticária / reação alérgica','Alergia',4,{},{urt:5,pru:5,exa:2,feb:-3},'Dispneia, edema de lábios/língua ou hipotensão: anafilaxia (adrenalina IM)');
 D('Varicela','',3,{age:[1,15]},{ves:5,feb:3,pru:3,exa:3,pro:1});
-D('Exantema viral (sarampo, rubéola e outros)','',2.5,{age:[0.5,30]},{exa:5,feb:4,cor:3,olv:3,tos:3,cont:2});
 D('Hiperglicemia / diabetes descompensado','',2,{age:[8,110],dur:'s'},{pdp:5,per:3,ast:3,dm:3,vom:1,dab:1,conf:1},'Vômitos, dor abdominal, respiração rápida ou confusão: pensar em cetoacidose');
 D('Anemia','',3,{dur:'c'},{ast:5,pali:5,dis:2,vert:2,pal:2,sgv:1});
 D('Pré-eclâmpsia','',1.5,{sex:'f',req:'gest'},{cef:4,pah:5,edm:3,esc:5,epi:3},'Gestante com PA ≥ 140x90 e sintomas: emergência obstétrica');
@@ -99,6 +98,60 @@ function findings(){const f={};Object.keys(C.it).forEach(k=>f[k]=C.it[k]);const 
 let LRN=LS('dxl',{cases:[]});if(!LRN.cases)LRN={cases:[]};
 function lcNames(){const s=new Set();DX.forEach(d=>s.add(d.n));Object.keys(P).forEach(k=>s.add(k));Object.keys(LIB_()).filter(k=>k.startsWith("d:")).forEach(k=>s.add(k.slice(2)));return [...s].filter(Boolean).sort((a,b)=>a.localeCompare(b,"pt"))}
 function lcSel(R){const top=(R&&R.out&&R.out[0]&&R.out[0].d)?R.out[0].d.n:"";return '<input id="lcf" list="lcdl" value="'+esc(top)+'" placeholder="Digite o diagnóstico ou escolha da lista" autocomplete="off" style="width:100%;margin:6px 0"><datalist id="lcdl">'+lcNames().map(n=>'<option value="'+esc(n)+'">').join("")+'</datalist><div class="row" style="margin:4px 0"><button class="chip" id="lcn" type="button" style="margin:0">Nome correto pela IA</button><button class="chip" id="lcc" type="button" style="margin:0">Montar conduta com IA</button></div><div class="fm" id="lcx"></div>'}
+function nz19(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim()}
+function knownDx(n){const t=nz19(n);if(!t)return '';const k=Object.keys(P).find(x=>nz19(x)===t);if(k)return k;const d=DX.find(x=>nz19(x.n)===t);return d?(d.pk&&P[d.pk]?d.pk:d.n):''}
+const AIADD_BUSY={};
+window.aiAutoAdd=async function(raw,onMsg){
+ const say=m=>{try{onMsg&&onMsg(m)}catch(e){}};
+ const name=String(raw||'').trim().replace(/^(conduta|tratamento|receita|prescri[cç][aã]o|manejo|protocolo)\s+(para\s+|d[aeo]s?\s+|na\s+|no\s+)?/i,'').replace(/[?.!]+$/,'').trim();
+ if(name.length<3)throw{code:'Digite o nome da doença.'};
+ const k0=knownDx(name);if(k0&&P[k0])return{nome:k0,existed:true};
+ if(!aiMode())throw{code:'Configure a IA em Config (Gemini ou Claude) para criar a patologia automaticamente.'};
+ const bk=nz19(name);if(AIADD_BUSY[bk])throw{code:'Já estou criando esta patologia, aguarde.'};AIADD_BUSY[bk]=1;
+ try{
+  say('Pesquisando "'+name+'" e montando ranking, conduta e receita… (até 1 minuto)');
+  const ids=Object.keys(SI).map(i=>i+'='+SI[i].n).join('; ');
+  const pr=`Doença/condição: "${name}".
+Pesquise diretrizes atuais (Ministério da Saúde/PCDT, sociedades médicas brasileiras, OMS) e monte, COM SUAS PRÓPRIAS PALAVRAS (não copie textos de livros ou manuais), o cadastro desta doença para um app brasileiro de prescrição usado em UBS, pronto-socorro e pediatria.
+Cada doença é única: NÃO agrupe várias doenças num cadastro só. Inclua as particularidades: notificação compulsória, afastamento/isolamento (tempo), gestantes, vacinação de contatos, ajustes por idade, função renal e alergias.
+Responda SOMENTE este JSON:
+{"nome":"nome padronizado em português","dx":{"pr":0.2 a 6 (frequência no PS/UBS; 6 = muito comum),"o":{"age":[idade mínima em anos, idade máxima]},"w":{"id_do_achado":peso},"al":"alerta curto"},"p":{"kw":"sinônimos e palavras-chave sem acento","a":[itens adulto],"c":[itens criança],"nt":["observações importantes"],"q":["perguntas para confirmar o diagnóstico e a segurança"],"or":["orientações ao paciente em linguagem simples, incluindo afastamento se houver"],"hosp":["prescrição hospitalar, 1 item por linha com dose"],"cd":{"dx":["como confirmar"],"tx":["tratamento: 1ª linha primeiro, depois alternativas"],"enc":["quando internar ou encaminhar"],"alta":["critérios de alta"],"ret":["retorno"]},"al":["sinais de alarme"],"diet":"dieta hospitalar","hyd":"hidratação hospitalar"}}
+Itens de receita:
+- adulto: {"t":"X","n":"Medicamento","f":"apresentação","x":"posologia completa: dose, via, intervalo e duração","o":{}}
+- criança por peso: {"t":"K","n":"Medicamento","f":"apresentação","mgkg":mg/kg por dose,"max":dose máxima em mg (0 se não houver),"conc":mg/mL da apresentação líquida (0 se comprimido),"via":"VO","h":intervalo em horas (2,3,4,6,8,12 ou 24),"d":dias,"pos":"observação curta","o":{}}
+- em "o": {"ho":1} se só hospitalar; {"ca":1} se só para casa; {"sos":"motivo"} se for "se necessário"; {"nt":"observação"}.
+Ordem: 1ª linha primeiro; depois alternativas (alergia, falta no SUS).
+Para "w" use SOMENTE estes ids de achados (positivo 1 a 8 = típico; negativo -1 a -5 = afasta; no mínimo 3 positivos): ${ids}.
+Se não houver tratamento medicamentoso ambulatorial, descreva a conduta inicial e o encaminhamento, com sintomáticos quando fizer sentido.
+Doenças que JÁ existem no app: ${Object.keys(P).join(' | ')}.
+Se a doença pedida for uma delas (mesmo com outro nome, sigla ou sinônimo), responda apenas {"existe":"nome exato da lista"}.`;
+  const r=await aiRaw([{role:'user',content:pr}],{system:'Você é médico(a) de família e emergencista no Brasil. Responde somente com JSON válido, sem nenhum texto fora do JSON.',max:8000,web:true});
+  let j=null;try{j=parseJ(r.text)}catch(e){j=null}
+  if(j&&j.existe&&P[j.existe])return{nome:j.existe,existed:true};
+  if(!j||typeof j!=='object'||!j.p||typeof j.p!=='object')throw{code:'A IA não devolveu um cadastro válido. Tente de novo.'};
+  const nome=String(j.nome||name).replace(/[<>]/g,'').trim().slice(0,90)||name;
+  const k1=knownDx(nome);if(k1&&P[k1])return{nome:k1,existed:true};
+  const hoje=new Date().toLocaleDateString('pt-BR'),p=j.p,arr=a=>Array.isArray(a)?a:[];
+  const pd={kw:String(p.kw||nome).slice(0,400),fonte:('Gerado por IA em '+hoje+' — rascunho: conferir com o protocolo local').slice(0,150),c:arr(p.c),a:arr(p.a),
+   nt:['Rascunho criado pela IA em '+hoje+'. Confira doses, alergias, gestação e o protocolo local antes de usar.'].concat(arr(p.nt)).slice(0,8),
+   q:p.q,or:p.or,hosp:p.hosp,cd:p.cd,al:p.al,diet:p.diet,hyd:p.hyd,ai:1};
+  dbApply('p:'+nome,pd);
+  if(!P[nome]){pd.a=[{t:'X',n:'Sem prescrição padrão',f:'—',x:'A IA não montou itens de receita válidos. Veja a conduta e prescreva conforme o protocolo local.'}];pd.c=[];dbApply('p:'+nome,pd)}
+  if(!P[nome])throw{code:'Não consegui montar o protocolo. Tente de novo.'};
+  let dxd=null;const w={},jd=j.dx&&typeof j.dx==='object'?j.dx:{},jw=jd.w&&typeof jd.w==='object'?jd.w:{};
+  Object.keys(jw).forEach(s=>{const v=Math.round(+jw[s]);if(SI[s]&&isFinite(v)&&v)w[s]=Math.max(-5,Math.min(8,v))});
+  if(Object.values(w).filter(v=>v>0).length>=2){dxd={n:nome,pk:nome,pr:Math.max(0.2,Math.min(6,+jd.pr||1)),o:jd.o&&typeof jd.o==='object'?jd.o:{},w};if(jd.al)dxd.al=String(jd.al).slice(0,300);dbApply('dx:'+nome,dxd)}
+  const rows=[{chave:'p:'+nome,dados:pd}];if(dxd)rows.push({chave:'dx:'+nome,dados:dxd});
+  try{const L=(LS('airows',[])||[]).filter(x=>x&&!rows.some(y=>y.chave===x.chave)).concat(rows).slice(-300);LSs('airows',L)}catch(e){}
+  try{const c=sbCfg();if(c.u&&c.k)await fetch(c.u+'/rest/v1/receitas',{method:'POST',headers:{...sbH(c.k),Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify(rows.map(x=>({chave:x.chave,dados:x.dados,rev:false})))})}catch(e){}
+  try{window.dbDone&&dbDone()}catch(e){}
+  try{genResumo(nome).catch(()=>{})}catch(e){}
+  return{nome,created:true,dx:!!dxd,src:r.src||[]};
+ }finally{delete AIADD_BUSY[bk]}};
+function resumoPrompt(k,conduta){return `Escreva, com suas próprias palavras, um RESUMO PARA ESTUDO sobre "${k}" para médico(a) recém-formado(a) no Brasil (UBS, pronto-socorro, pediatria e provas de residência). Use estes títulos em negrito, nesta ordem: **Agente / causa** (vírus, bactéria, parasita ou mecanismo; família), **Epidemiologia e transmissão** (quem é mais afetado, como passa, incubação e período de transmissibilidade), **Fisiopatologia em uma frase**, **Quadro clínico** (fases e sinais característicos), **Diagnóstico** (clínico, exames e diagnósticos diferenciais), **Tratamento** (1ª linha e alternativas, com doses usuais de adulto e criança quando houver), **Conduta: casa × internação**, **Complicações**, **Prevenção, notificação e afastamento**, **Pontos que caem em prova**. Até 450 palavras, frases curtas, sem copiar texto de livros. Mantenha coerência com as condutas do app: ${conduta||'nenhuma cadastrada'}. Se houver incerteza ou controvérsia, diga.`}
+function condutaTxt(k){const pk=P[k]||{};return['c','a'].map(t=>pk[t]?(t==='c'?'Criança: ':'Adulto: ')+pk[t].filter(m=>!m.off).slice(0,5).map(m=>m.n+' '+m.f).join('; '):'').filter(Boolean).join(' | ')}
+async function genResumo(k){if(!aiMode()||!P[k])return false;const r=await aiRaw([{role:'user',content:resumoPrompt(k,condutaTxt(k))}],{max:3500});if(r&&r.text){libSet('d:'+k,{txt:r.text,ts:Date.now()});return true}return false}
+window.__dxNames=()=>DX.map(d=>d.n);
 const LRN_SAVE=()=>LSs('dxl',LRN);
 function lrnStats(){const cnt={},sc={},rej={};LRN.cases.forEach(c=>{cnt[c.conf]=(cnt[c.conf]||0)+1;(sc[c.conf]=sc[c.conf]||{});(c.pres||[]).forEach(s=>sc[c.conf][s]=(sc[c.conf][s]||0)+1);if(c.top&&c.top[0]&&c.top[0]!==c.conf){rej[c.top[0]]=rej[c.top[0]]||[];rej[c.top[0]].push(c.pres||[])}});return{cnt,sc,rej}}
 let LST=null;
@@ -220,7 +273,7 @@ function update(){const R=rank(),w=$('cres');if(!w)return;
    <div style="height:6px;border-radius:4px;background:var(--bd);margin:4px 0"><div style="height:6px;border-radius:4px;background:var(--ac);width:${Math.max(4,Math.round(Math.pow(r.rel,0.5)*100))}%"></div></div>
    <div class="fm">A favor: ${r.sup.map(s=>esc(SI[s].n)).join(', ')}</div>${r.mis.length?`<div class="fm">Perguntar/procurar: ${r.mis.slice(0,4).map(s=>esc(SI[s].n)).join(', ')}</div>`:''}
    ${r.d.al?`<div class="wn">⚠ ${esc(r.d.al)}</div>`:''}
-   <div class="row" style="margin:2px 0 0">${pk?`<button class="chip" data-rx="${esc(pk)}" data-dst="c" type="button" style="margin:0">\uD83C\uDFE0 Receita para casa</button><button class="chip" data-rx="${esc(pk)}" data-dst="h" type="button" style="margin:0">\uD83C\uDFE5 Prescrição hospital</button><button class="chip" data-cd="${esc(pk)}" type="button" style="margin:0">Conduta</button>`:'<span class="fm">Sem protocolo cadastrado: use “Perguntar à IA” para gerar receita e conduta.</span>'}<button class="chip" data-ai="${i}" type="button" style="margin:0">Perguntar à IA</button><button class="chip" data-ok="${i}" type="button" style="margin:0">✔ Era este</button></div></div>`}).join('')+'</div>';
+   <div class="row" style="margin:2px 0 0">${pk?`<button class="chip" data-rx="${esc(pk)}" data-dst="c" type="button" style="margin:0">\uD83C\uDFE0 Receita para casa</button><button class="chip" data-rx="${esc(pk)}" data-dst="h" type="button" style="margin:0">\uD83C\uDFE5 Prescrição hospital</button><button class="chip" data-cd="${esc(pk)}" type="button" style="margin:0">Conduta</button>`:'<span class="fm">Sem protocolo cadastrado: use “Perguntar à IA” para gerar receita e conduta.</span>'}${pk?`<button class="chip" data-st="${esc(pk)}" type="button" style="margin:0">\uD83D\uDCDA Resumo</button>`:''}<button class="chip" data-ai="${i}" type="button" style="margin:0">Perguntar à IA</button><button class="chip" data-ok="${i}" type="button" style="margin:0">✔ Era este</button></div></div>`}).join('')+'</div>';
   h+=`<div class="card"><b>Confirmar o diagnóstico final</b><div class="fm">Registre o que você concluiu. O app guarda os achados + o diagnóstico e usa isso para melhorar o ranking nos próximos casos. Se o seu diagnóstico não estiver na lista, digite-o: as sugestões aparecem enquanto você escreve. Use a IA para padronizar o nome e montar um rascunho de conduta.</div>
    ${lcSel(R)}
    <textarea id="lnote" rows="2" placeholder="História / observações (opcional)" style="width:100%"></textarea>
@@ -233,18 +286,19 @@ function update(){const R=rank(),w=$('cres');if(!w)return;
  const sv=$('lsv');if(sv)sv.onclick=()=>{const v=$('lcf').value.trim();if(!v){lst('Digite o diagnóstico.');return}lrnRecord(v,$('lnote').value);lst('✔ Salvo: "'+v+'". Total: '+LRN.cases.length)};
  const lcnB=$('lcn');if(lcnB)lcnB.onclick=async()=>{const t=$('lcf').value.trim(),x=$('lcx');if(!t){x.textContent="Digite o diagnóstico primeiro.";return}x.textContent="Consultando a IA…";
  try{const j=await askAI('Um médico digitou o diagnóstico "'+t+'" (Brasil: atenção básica, pronto-socorro ou pediatria). Qual o nome padronizado em português, como aparece em protocolos brasileiros (Ministério da Saúde, SBP, SBMFC, CID-10)? Responda {"nome":"..."}. Se o termo já estiver correto, devolva-o igual.');const n=String((j&&j.nome)||"").trim();if(!n)throw 0;$('lcf').value=n;x.textContent="✓ Nome padronizado: "+n+". Confira e salve o caso."}catch(e){x.textContent="Não consegui padronizar. Confirme o nome manualmente."}};
-const lccB=$('lcc');if(lccB)lccB.onclick=async()=>{const t=$('lcf').value.trim(),x=$('lcx');if(!t){x.textContent="Digite o diagnóstico primeiro.";return}if(!aiMode()){x.textContent="Configure a IA em Config (Gemini ou Claude) para montar a conduta.";return}x.textContent="Montando o rascunho da conduta… (alguns segundos)";
- const li=a=>(Array.isArray(a)?a:[]).map(o=>typeof o==="string"?o:[o.med,o.dose,o.via,o.freq,o.dur].filter(Boolean).join(" · ")).map(s=>"- "+s).join("\n")||"- —";
- const ls=a=>(Array.isArray(a)?a:[]).map(s=>"- "+s).join("\n")||"- —";
- try{const j=await askAI('Monte um RASCUNHO de conduta para "'+t+'" (Brasil; adulto e pediatria quando indicado). Escreva com suas próprias palavras. Responda JSON: {"conduta":"texto curto","receita_casa":[{"med":"","dose":"","via":"","freq":"","dur":""}],"receita_hosp":[{"med":"","dose":"","via":"","freq":"","dur":""}],"orientacoes":["..."],"sinais_alarme":["..."],"internacao":"quando internar","exames":["..."],"seguranca":"alergias, gestação, interações, ajuste renal ou hepático"}. Em pediatria, doses por peso. Se não houver consenso, diga isso no texto.');
-  if(!j||(!j.conduta&&!j.receita_casa))throw 0;
-  const txt="Rascunho gerado por IA: revisar com o protocolo local antes de usar.\n\n**Conduta:** "+(j.conduta||"—")+"\n\n**Receita para casa:**\n"+li(j.receita_casa)+"\n\n**Prescrição hospitalar:**\n"+li(j.receita_hosp)+"\n\n**Orientações:**\n"+ls(j.orientacoes)+"\n\n**Sinais de alarme:**\n"+ls(j.sinais_alarme)+"\n\n**Internação:** "+(j.internacao||"—")+"\n\n**Exames:**\n"+ls(j.exames)+"\n\n**Segurança:** "+(j.seguranca||"—");
-  libSet("d:"+t,{txt,ts:Date.now()});x.textContent="✓ Rascunho salvo como resumo de \""+t+"\". Revise antes de usar. Ele fica na Biblioteca e é enviado ao banco online."}catch(e){x.textContent="A IA não devolveu um rascunho válido. Tente de novo."}};
+const lccB=$('lcc');if(lccB)lccB.onclick=async()=>{const t=$('lcf').value.trim(),x=$('lcx');if(!t){x.textContent="Digite o diagnóstico primeiro.";return}
+ try{const r=await aiAutoAdd(t,m=>{x.textContent=m});$('lcf').value=r.nome;
+  ($('lcx')||x).innerHTML=(r.existed?'Já existe no app: <b>'+esc(r.nome)+'</b>. ':'✓ <b>'+esc(r.nome)+'</b> criado pela IA'+(r.dx?' e já entrou no ranking':'')+'. Rascunho: revise antes de usar. ')+'<button class="chip" type="button" id="lco" style="margin:4px 0 0">Abrir conduta e receita</button>';
+  const b=$('lco');if(b)b.onclick=()=>{if(window.condOpen)condOpen(r.nome,'cond')}}catch(e){($('lcx')||x).textContent='✗ '+errTxt(e)}};
+if(sv){const sv0=sv.onclick;sv.onclick=async()=>{sv0();const v=$('lcf').value.trim(),x=$('lcx');if(!v||knownDx(v)||!aiMode())return;
+ try{const r=await aiAutoAdd(v,m=>{x.textContent=m});($('lcx')||x).innerHTML='✓ <b>'+esc(r.nome)+'</b> '+(r.existed?'já existia no app.':'foi criado pela IA'+(r.dx?' e entrou no ranking':'')+'. Rascunho: revise antes de usar.')+' <button class="chip" type="button" id="lco2" style="margin:4px 0 0">Abrir conduta e receita</button>';
+  const b=$('lco2');if(b)b.onclick=()=>{if(window.condOpen)condOpen(r.nome,'cond')}}catch(e){($('lcx')||x).textContent='✗ '+errTxt(e)}}}
 const ex=$('lex');if(ex)ex.onclick=async()=>{const t=JSON.stringify(LRN);try{await navigator.clipboard.writeText(t);lst('Casos copiados para a área de transferência ('+LRN.cases.length+').')}catch(e){prompt('Copie:',t)}};
  const im=$('lim');if(im)im.onclick=()=>{const t=prompt('Cole o JSON exportado:');if(!t)return;try{const o=JSON.parse(t);if(!o.cases)throw 0;LRN.cases=LRN.cases.concat(o.cases.filter(c=>c&&c.conf)).slice(-2000);LRN_SAVE();LST=null;update()}catch(e){lst('JSON inválido.')}};
  w.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{setS(b.dataset.q,+b.dataset.v);refresh()});
  w.querySelectorAll('[data-rx]').forEach(b=>b.onclick=()=>{if(window.condOpen&&P[b.dataset.rx]){condOpen(b.dataset.rx,b.dataset.dst==='h'?'hosp':'casa');return}const k=b.dataset.rx,pk=P[k],t=pk.c&&!pk.a?'c':pk.a&&!pk.c?'a':$('tipo').value||'a';if(!$('tipo').value||(pk.c&&!pk.a)||(pk.a&&!pk.c)){$('tipo').value=t;$('tipo').dispatchEvent(new Event('change'))}$('pat').value=k;$('q').value=k;$('dest').value=b.dataset.dst||'c';build();rx();showTab('t-rx')});
  w.querySelectorAll('[data-cd]').forEach(b=>b.onclick=()=>{if(window.condOpen&&P[b.dataset.cd]){condOpen(b.dataset.cd,'cond');return}LSEL={t:'d',k:b.dataset.cd};LT='d';showTab('t-bib')});
+ w.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{showTab('t-bib');disDet(b.dataset.st)});
  w.querySelectorAll('[data-ai]').forEach(b=>b.onclick=()=>{const r=R.out[+b.dataset.ai];showTab('t-ia');csend(`Neste caso, discuta "${r.d.n}": critérios diagnósticos, o que confirma ou afasta, exames, conduta e sinais de alarme.`)});window.__cu&&window.__cu()}
 
 /* integra o caso ao contexto do chat de IA */

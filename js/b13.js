@@ -32,6 +32,7 @@ function dbApply(k,d){try{
  else if(k.startsWith('dx:')){if(window.dxAdd)dxAdd(d)}
  else if(k.startsWith('sx:')){if(window.sxAdd)sxAdd([d.id,d.n,d.g,d.re,d.al])}}catch(e){}}
 window.dbApply=dbApply;window.DBP=DBP;
+try{(LS('airows',[])||[]).forEach(x=>{if(x&&x.chave&&x.dados)dbApply(x.chave,x.dados)})}catch(e){}
 window.dbDone=()=>{try{window.dxRefresh&&dxRefresh()}catch(e){}};
 /* aplica o que ficou na fila (resposta chegou antes deste script) e o cache do último carregamento */
 (window.__dbq||[]).forEach(x=>dbApply(x[0],x[1]));window.__dbq=[];

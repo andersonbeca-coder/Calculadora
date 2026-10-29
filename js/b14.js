@@ -448,8 +448,14 @@ const secOf=q=>{const both=/\b(prescri[a-z]*|receit[a-z]*)\b/.test(q.n);
  return{cond:1,int:1,hosp:0,casa:0}};
 function sugHtml(A){const R0=(A&&A.res)||[],r=R0.filter((x,i)=>i===0||x.s>=Math.max(1.5,0.45*R0[0].s)).slice(0,6);if(!r.length)return'';
  return'<div class="fm" style="margin-top:8px">'+(A.q.cmd?(A.full?'Conduta encontrada':'Conduta aproximada'):(A.full?'Protocolo encontrado':'Protocolo aproximado'))+(r.length>1?' — toque para trocar:':' — toque para abrir:')+'</div><div>'+
-  r.map(x=>'<button type="button" class="chip'+(x.k===PAN.k?' on':'')+'" data-sg="'+E(x.k)+'" style="margin:4px 6px 0 0">'+E(x.k)+'</button>').join('')+'</div>'}
-function noneHtml(){return'<div class="alb"><div>Não achei protocolo com esse nome. Tente a sigla (AVC, IAM, DPOC, ITU), o nome da doença ou um sinônimo.</div><div><button class="chip" type="button" data-sgai="1" style="margin:4px 0 0">\uD83E\uDD16 Pedir a conduta à IA</button></div></div>'}
+  r.map(x=>'<button type="button" class="chip'+(x.k===PAN.k?' on':'')+'" data-sg="'+E(x.k)+'" style="margin:4px 6px 0 0">'+E(x.k)+'</button>').join('')+'</div>'+(A.full?'':'<div><button class="chip" type="button" data-sgnew="1" style="margin:6px 0 0">\uD83E\uDD16 Não é isso? Criar esta doença com IA</button></div>')}
+function noneHtml(){return'<div class="alb"><div>Não achei protocolo com esse nome. Tente a sigla (AVC, IAM, DPOC, ITU), o nome da doença ou um sinônimo.</div><div><button class="chip" type="button" data-sgnew="1" style="margin:4px 6px 0 0">\uD83E\uDD16 Criar esta doença com IA (ranking, conduta e receita)</button><button class="chip" type="button" data-sgai="1" style="margin:4px 0 0">\uD83D\uDCAC Perguntar à IA</button></div></div>'}
+async function runNew(){const ta=g('chs'),box=g('csug');if(!ta||!box||!window.aiAutoAdd)return;const raw=ta.value;
+ box.innerHTML='<div class="fm" id="cnew" style="margin-top:8px">\uD83E\uDD16 Criando com IA…</div>';
+ try{const r=await aiAutoAdd(raw,m=>{const e=g('cnew');if(e)e.textContent='\uD83E\uDD16 '+m});IDX=null;let A=null;try{A=analyze('conduta '+r.nome)}catch(e){}LASTQ=A;
+  if(P[r.nome])condOpen(r.nome,'cond');
+  box.innerHTML='<div class="alb"><div>'+(r.existed?'Encontrado no app: ':'✓ Criado pela IA (rascunho, revise antes de usar): ')+'<b>'+E(r.nome)+'</b></div></div>'+(A?sugHtml(A):'')}
+ catch(e){box.innerHTML=noneHtml()+'<div class="fm">✗ '+E(errTxt(e))+'</div>'}}
 function runText(force){const ta=g('chs'),box=g('csug');if(!ta||!box)return;
  const raw=ta.value;let A=null;
  if(raw.trim().length>=2){try{A=analyze(raw);if(force&&(A.mode==='narr'||A.mode==='none'))A=analyze('conduta '+raw)}catch(e){console.error(e)}}
@@ -458,9 +464,10 @@ function runText(force){const ta=g('chs'),box=g('csug');if(!ta||!box)return;
   const c=g('cre');if(c)c.click();box.innerHTML='<div class="fm" style="margin-top:8px">Texto de história: reconheci os sintomas. Veja “Diagnósticos mais prováveis” logo abaixo e toque em <b>Conduta</b>, <b>Receita para casa</b> ou <b>Prescrição hospital</b> no diagnóstico escolhido.</div>';
   const r=g('cres');if(r&&r.scrollIntoView)setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'start'}),80);return}
  if(!A||A.mode==='narr'||A.mode==='none'){box.innerHTML='';return}
- if(A.mode==='cmd0'){box.innerHTML=noneHtml();return}
+ if(A.mode==='cmd0'){box.innerHTML=noneHtml();if(force&&typeof aiMode==='function'&&aiMode())runNew();return}
  if(A.q.cmd&&fillDemo(raw))renderSoon();
  box.innerHTML=sugHtml(A);
+ if(force&&!A.full&&typeof aiMode==='function'&&aiMode()){runNew();return}
  const t=g('t-caso'),vis=!!t&&!t.hidden,top=A.full&&A.res[0]?A.res[0].k:null;
  if(top&&top!==PAN.k&&vis&&(force||PAN.closedFor!==z(raw))){condOpen(top,secOf(A.q),!force);box.innerHTML=sugHtml(A)}}
 window.__sg16=()=>runText();
@@ -468,6 +475,7 @@ let TT16=0;const onText=()=>{clearTimeout(TT16);TT16=setTimeout(()=>runText(),50
 function caseClick(e){const t=e.target;if(!t.closest)return;
  const sg=t.closest('[data-sg]');
  if(sg){condOpen(sg.dataset.sg,LASTQ?secOf(LASTQ.q):'cond');const b=g('csug');if(b)b.innerHTML=sugHtml(LASTQ);return}
+ if(t.closest('[data-sgnew]')){runNew();return}
  if(t.closest('[data-sgai]')){const raw=(g('chs')||{}).value||'';showTab('t-ia');csend('Paciente: '+patLine()+'. Alergias: '+algTxt()+'. Preciso da conduta completa para: '+raw.slice(0,300)+'. Inclua: confirmação diagnóstica, tratamento, critérios de internação x alta, prescrição para o momento no hospital e receita para casa com doses para este paciente, orientações e sinais de alarme.');return}
  if(t.closest('#cim')){const f=g('cimf');if(f)f.click();return}
  if(t.closest('#cbusca')){runText(true);return}
