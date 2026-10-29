@@ -2,7 +2,7 @@
 
 const mk=(k,kw,o)=>{NP(k,kw,o);const s=$('pat');if(s&&![...s.options].some(x=>x.value===k))s.add(new Option(k,k))};
 const f1=x=>String(Math.round(x*10)/10).replace('.',','),f0=x=>String(Math.round(x));
-const F='(PS Zerado, conferir o protocolo local)';
+const F='(conferir o protocolo local)';
 const E=(n,f,t,o)=>X(n,f,t,o||{});
 /* ---------- CARDIOLOGIA ---------- */
 mk('PS adulto — Taquicardia supraventricular (estável)','tsv taquicardia supraventricular adenosina metoprolol',{a:[
@@ -62,7 +62,7 @@ nt:['Evitar triptanos em doença coronariana e HAS não controlada. '+F]});
 mk('PS adulto — Crise convulsiva (esquema do PS)','convulsão crise convulsiva estado de mal epiléptico diazepam midazolam fenitoína fenobarbital',{a:[
 E('1º passo: diazepam 10 mg/2 mL','EV lento','1 amp. EV em bolus lento. SEM acesso: midazolam 10 mg IM. (Diazepam não vai IM.)'),
 E('Refratário em 5 min','repetir','Repetir o benzodiazepínico (diazepam 10 mg EV lento ou midazolam 10 mg IM).'),
-E('Refratário aos benzodiazepínicos — fenitoína 250 mg/5 mL (Hidantal)','EV','Ataque = peso (kg) × 20 mg (ex.: 68 kg × 20 = 1.360 mg → 6 ampolas = 1.500 mg) diluídas em 250 mL de SF 0,9% e infundidas em 1 hora (a velocidade não deve passar de 50 mg/min: limite habitual, não consta no guia; monitorizar ECG e PA). Manutenção: 100 mg + 100 mL de SF 0,9% a cada 8 horas. Só em SF 0,9%; nunca IM. (PS Zerado, 2ª ed.)'),
+E('Refratário aos benzodiazepínicos — fenitoína 250 mg/5 mL (Hidantal)','EV','Ataque = peso (kg) × 20 mg (ex.: 68 kg × 20 = 1.360 mg → 6 ampolas = 1.500 mg) diluídas em 250 mL de SF 0,9% e infundidas em 1 hora (a velocidade não deve passar de 50 mg/min: limite habitual; monitorizar ECG e PA). Manutenção: 100 mg + 100 mL de SF 0,9% a cada 8 horas. Só em SF 0,9%; nunca IM.'),
 E('Ou fenobarbital 200 mg/2 mL','EV','5 amp. em 90 mL de NaCl 0,9% (10 mg/mL): 1 mL/kg (10 mg/kg). Outras fontes: 15–20 mg/kg.',{off:1}),
 E('Refratário: IOT + sedação contínua','UTI','Midazolam 50 mg/10 mL: diluir 3 ampolas (30 mL) em 120 mL de SF 0,9% (1 mg/mL); ataque 0,2 mg/kg EV e manutenção 0,1–0,4 mg/kg/h. Se persistir: + propofol 1–2 mg/kg e 5–10 mg/kg/h; + tiopental 100–250 mg e 3–5 mg/kg/h.')],
 nt:['Sempre checar glicemia capilar. '+F]});
@@ -175,7 +175,7 @@ mk('PS adulto — Psicose aguda / delirium','psicose delirium haloperidol risper
 T('Psicose: haloperidol','comprimido 5 mg',5,1,12,7,14,{nt:'1–5 mg VO; máx. 40 mg/dia. IM: 2–4 mg (0,4–0,5 mL)'}),
 T('Risperidona (se intolera haloperidol)','comprimido 2 mg',2,1,24,7,7,{off:1,nt:'2–8 mg/dia; máx. 16 mg/dia (aumentar 1 mg/dia)'}),
 T('Olanzapina (refratário ou extrapiramidal)','comprimido 10 mg',10,1,24,7,7,{off:1,nt:'10–20 mg/dia; máx. 20 mg/dia'}),
-E('Delirium hiperativo: haloperidol 5 mg/mL','IM ou EV','0,5 amp. (2,5 mg) de 30/30 min até estabilizar, no máx. 3 vezes. Fazer ECG: evitar se QTc > 500 ms. Fontes divergem do máximo diário (PS Zerado: 5 mg/dia VO); conferir.'),
+E('Delirium hiperativo: haloperidol 5 mg/mL','IM ou EV','0,5 amp. (2,5 mg) de 30/30 min até estabilizar, no máx. 3 vezes. Fazer ECG: evitar se QTc > 500 ms. O teto diário varia entre protocolos; em idosos, usar as menores doses.'),
 E('Delirium: opções VO noturnas','VO','Risperidona 0,5 mg à noite (máx. 6 mg/dia); olanzapina 5 mg à noite (+2,5 mg); quetiapina 25 mg à noite.',{off:1})],
 nt:['Delirium: tratar a causa (infecção, dor, retenção, medicamentos) e medidas não farmacológicas. '+F]});
 mk('PS adulto — Acatisia / ansiedade e pânico','acatisia ansiedade pânico clonazepam lorazepam diazepam alprazolam propranolol',{a:[
@@ -211,11 +211,11 @@ fn:v=>{const[w,f,na,ns,mx,h]=v;if(!(w>0&&f>0&&h>0&&mx>0))return '<div class="wn"
  const act=w*f,dl=Math.abs(ns-na)/(act+1),vol=1000*mx/dl,rate=vol/h;
  const dir=ns>na?'aumentar':'reduzir';
  return '<div class="ul"><div>Água corporal total ≈ '+f1(act)+' L.</div><div>1 L da solução vai '+dir+' o Na⁺ em ≈ <b>'+f1(dl)+' mEq/L</b>.</div><div>Para '+dir+' '+f1(mx)+' mEq/L: <b>'+f0(vol)+' mL</b> em '+f0(h)+' h = <b>'+f1(rate)+' mL/h</b>.</div>'+
- '<div class="fm">Solução 3% = 890 mL de NaCl 0,9% + 110 mL de NaCl 20% (ou metade). Dosar o Na⁺ de 2/2h a 4/4h e reajustar; NÃO passar de 8–12 mEq/L em 24 h (risco de mielinólise). Hipernatremia crônica ou de duração desconhecida: queda de no máx. 0,5 mEq/L/h. Repor volume antes (RL ou SF). Fórmula de Adrogué-Madias (PS Zerado). Conferir antes de prescrever.</div></div>'}};
+ '<div class="fm">Solução 3% = 890 mL de NaCl 0,9% + 110 mL de NaCl 20% (ou metade). Dosar o Na⁺ de 2/2h a 4/4h e reajustar; NÃO passar de 8–12 mEq/L em 24 h (risco de mielinólise). Hipernatremia crônica ou de duração desconhecida: queda de no máx. 0,5 mEq/L/h. Repor volume antes (RL ou SF). Fórmula de Adrogué-Madias. Conferir antes de prescrever.</div></div>'}};
 mk('PS adulto — Hipo/hipernatremia, cálcio e magnésio','hiponatremia hipernatremia cálcio hipocalcemia hipercalcemia magnésio hipomagnesemia hipermagnesemia gluconato sulfato de magnésio',{a:[
 E('Sódio','calculadora','Use a calculadora "Hiponatremia / hipernatremia" na aba Calculadoras/Escalas. Meta: no máx. 8–12 mEq/L em 24 h.'),
 E('Hipocalcemia sintomática — gluconato de cálcio 10%','EV','1 amp. em 50–100 mL de SF em 1 h; ou 5 amp. em 500 mL em 5–10 h. Corrigir hiperfosfatemia antes. Assintomática: cálcio VO 1.000–2.600 mg/dia.'),
-E('Hipercalcemia','EV','Hidratação vigorosa 200–500 mL/h conforme tolerância; depois furosemida. Ácido zoledrônico 4 mg EV em 15 min ou pamidronato 60–90 mg EV em dose única (o texto-fonte indica "a cada 4 horas", o que parece erro: conferir).',{off:1}),
+E('Hipercalcemia','EV','Hidratação vigorosa 200–500 mL/h conforme tolerância; depois furosemida. Ácido zoledrônico 4 mg EV em 15 min ou pamidronato 60–90 mg EV em dose única (não repetir antes de 7 dias).',{off:1}),
 E('Hipomagnesemia grave / Torsades','EV','Sulfato de Mg 10%: 2 amp. (20 mL) em 100 mL de SG 5% em 2–5 min; manutenção 4 amp. (40 mL) em 460 mL de SF em 12–24 h. Máx. 6 g/dia (3 g se ClCr < 30).'),
 E('Hipomagnesemia leve','VO/EV','Óxido de magnésio 800–1.600 mg/dia em 3–4 doses, ou sulfato de Mg 10% 1–2 amp. em 100–250 mL em 1–2 h.',{off:1}),
 E('Hipermagnesemia','EV','Suspender fontes de Mg; furosemida 0,5–1 mg/kg EV; se grave/sintomática, gluconato de cálcio 10% 1 amp. em 50–100 mL em 3–5 min; refratária: diálise.',{off:1})],

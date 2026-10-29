@@ -80,7 +80,7 @@ T('Clonazepam','comprimido 0,5 mg',0.5,1,12,30,60,{off:1,nt:'Ansiolítico 0,25�
 T('Zolpidem','comprimido 10 mg',10,1,24,30,30,{off:1,nt:'1 cp à noite, 30 min antes de deitar'})],
 nt:['Receita AZUL (notificação B1). Zolpidem também é B1. Uso por curto período, avisar sobre sonolência, não dirigir e não associar a álcool. '+Y]});
 mk('Receituário — Ansiedade / bruxismo','ansiedade bruxismo escitalopram ciclobenzaprina cetoprofeno',{a:[
-T('Escitalopram','comprimido 10 mg',10,1,24,30,30,{nt:'Pela manhã; a fonte lista 20 mg, comece com 10 mg'}),
+T('Escitalopram','comprimido 10 mg',10,1,24,30,30,{nt:'Pela manhã; começar com 10 mg e, se preciso, subir para 20 mg após 2 a 4 semanas'}),
 T('Ciclobenzaprina','comprimido 10 mg',10,1,24,10,10,{nt:'À noite (após as 20h)'}),
 CET(5)],nt:['Receita C1. '+Y]});
 mk('Receituário — Soluços','soluço soluços baclofeno',{a:[T('Baclofeno','comprimido 5 mg',5,1,12,3,6,{nt:'Até melhorar o sintoma'})],nt:[Y]});
@@ -127,7 +127,7 @@ mk('Receituário — Miíase (berne)','miíase berne larvas ivermectina vaselina
 E('Retirada das larvas','procedimento','Anestesia local, incisão em cruz e remoção; ou oclusão com vaselina para as larvas saírem.'),
 E('Ivermectina 6 mg','VO','1 comprimido 1x/dia por 3 dias (dose ≈ 200 mcg/kg; conferir o peso).')],nt:[Y]});
 mk('Receituário — Herpes zóster','herpes zóster cobreiro aciclovir prednisolona',{a:[
-E('Aciclovir 400 mg','VO','800 mg (2 comprimidos) 5x ao dia (de 4/4h, sem dose noturna) por 7 dias. A fonte escreve "2 cp de 4/4h", o que passaria da dose usual: conferir.'),
+E('Aciclovir 400 mg','VO','800 mg (2 comprimidos) 5x ao dia (de 4/4h, sem dose noturna) por 7 dias.'),
 DIP(),
 T('Prednisolona','comprimido 20 mg',20,1,24,5,5,{off:1}),
 E('Aciclovir creme','tópico','Aplicar 5x/dia até as lesões secarem.',{off:1})],nt:['Ajustar o aciclovir se função renal reduzida. '+Y]});
@@ -139,7 +139,7 @@ T('Cefalexina','cápsula 500 mg',500,1,6,7,28)],nt:['Abscesso grande: drenagem. 
 mk('Receituário — Pitiríase versicolor (adulto, VO)','pitiríase versicolor pano branco fluconazol itraconazol cetoconazol shampoo',{a:[
 E('Cetoconazol shampoo','tópico','Aplicar no couro cabeludo e nas lesões; deixar agir e enxaguar.'),
 T('Itraconazol','cápsula 100 mg',100,2,24,7,14,{off:1,nt:'200 mg/dia por 7 dias (conferir)'}),
-T('Fluconazol','comprimido 150 mg',150,3,24,1,3,{off:1,nt:'450 mg em dose única, segundo a fonte'})],nt:[Y]});
+T('Fluconazol','comprimido 150 mg',150,3,24,1,3,{off:1,nt:'Esquema alternativo; na candidíase complicada ou recorrente prefira 150 mg a cada 72 h (3 doses)'})],nt:[Y]});
 mk('Receituário — Psoríase','psoríase calcipotriol betametasona tracolimo metotrexato',{a:[
 E('Calcipotriol + betametasona pomada','tópico','2x/dia nas placas por 4 semanas.'),
 E('Tacrolimo pomada','tópico','Em dobras e face.',{off:1}),
@@ -149,7 +149,7 @@ mk('Receituário — Verruga plantar (olho de peixe)','verruga plantar olho de p
 mk('Receituário — Insuficiência cardíaca (uso contínuo)','insuficiência cardíaca icc losartana carvedilol furosemida espironolactona aas sinvastatina',{a:[
 T('Losartana','comprimido 50 mg',50,1,12,30,60),
 T('Carvedilol','comprimido 6,25 mg',6.25,1,12,30,60,{nt:'Dose individualizada (6,25 a 25 mg 12/12h)'}),
-T('Furosemida','comprimido 40 mg',40,1,24,30,30,{nt:'Pela manhã (a fonte usa de manhã e às 16h)'}),
+T('Furosemida','comprimido 40 mg',40,1,24,30,30,{nt:'Pela manhã; se forem 2 doses, a segunda até as 16 h'}),
 T('Espironolactona','comprimido 50 mg',50,1,24,30,30,{nt:'Às 16h; checar potássio'}),
 T('AAS','comprimido 100 mg',100,1,24,30,30,{nt:'Após o almoço'}),
 T('Sinvastatina','comprimido 20 mg',20,1,24,30,30,{nt:'À noite'})],nt:['Modelo de uso contínuo: individualizar doses, checar PA, creatinina e potássio. '+Y]});
@@ -164,7 +164,7 @@ mk('Receituário — ITU (variações)','itu infecção urinária levofloxacino 
 T('Levofloxacino','comprimido 500 mg',500,1,24,7,7),
 T('Norfloxacino','comprimido 400 mg',400,1,12,10,20,{off:1}),
 T('Nitrofurantoína','cápsula 100 mg',100,1,6,7,28,{off:1}),
-E('Fosfomicina trometamol 3 g (Monuril)','VO','1 envelope dissolvido em 50–75 mL de água, em jejum, à noite, depois de urinar. A fonte prescreve 2 doses em dias consecutivos; a posologia usual é dose única: conferir.',{off:1}),
+E('Fosfomicina trometamol 3 g (Monuril)','VO','1 envelope dissolvido em 50–75 mL de água, em jejum, à noite, depois de urinar. Dose única.',{off:1}),
 T('Fenazopiridina (Pyridium) 100 mg','comprimido',100,1,8,2,6,{off:1,nt:'Apenas 2 dias; urina fica alaranjada'}),
 T('Ceclor 750 (cefaclor)','comprimido 750 mg',750,1,12,7,14,{off:1}),
 DIP()],nt:['Gestante: usar a receita de ITU na gestação. '+Y]});
@@ -181,7 +181,7 @@ E('Hidrocortisona 1% creme','tópico','2x/dia nas lesões (curto prazo).',{off:1
 E('Fimose: corticoide tópico (ex.: Postec)','tópico','2x/dia na glande por 3 semanas, com retração suave.',{off:1})],nt:['Higiene local; cirurgia se necessário. '+Y]});
 mk('Receituário — Gonorreia (antiga: não recomendada)','gonorreia ciprofloxacino azitromicina',{a:[
 E('Ver a receita "PS adulto — Uretrite gonocócica"','recomendado','Ceftriaxona 500 mg IM dose única + azitromicina 1 g VO dose única.')],
-nt:['O receituário-fonte usa ciprofloxacino 500 mg 12/12h por 10 dias + azitromicina 1 g. Por resistência, o esquema atual recomendado é com ceftriaxona: use a receita "PS adulto — Uretrite gonocócica / não gonocócica". '+Y]});
+nt:['Pela resistência do gonococo às quinolonas, o esquema recomendado usa ceftriaxona: use a receita "PS adulto — Uretrite gonocócica / não gonocócica". '+Y]});
 /* ---------- Digestivo ---------- */
 mk('Receituário — Vômitos / náuseas (adulto)','vômito náusea ondansetrona metoclopramida dimenidrato bromoprida',{a:[
 T('Ondansetrona','comprimido 8 mg',8,1,12,3,6,{nt:'Também em filme sublingual (Vonau flash 8 mg)'}),
@@ -207,7 +207,7 @@ E('Orientações','medidas','2 L de água por dia, dieta branda, repouso, evitar
 mk('Receituário — Anemia ferropriva (VO + ácido fólico)','anemia ferropriva sulfato ferroso ácido fólico noripurum',{a:[
 T('Sulfato ferroso','comprimido 40 mg ferro elementar',40,1,24,30,30,{nt:'1 cp ao dia por 30 dias (dose conforme o ferro elementar do rótulo)'}),
 T('Ácido fólico','comprimido 5 mg',5,1,24,30,30),
-E('Hospital-dia: Noripurum 50 mg/mL','EV','2 amp. em 250 mL de SF 1x por semana por 4 semanas (8 amp.).',{off:1})],nt:['A fonte lista 50 mg/mL (Noripurum EV 100 mg/5 mL = 20 mg/mL); confira o rótulo da apresentação antes de preparar. '+Y]});
+E('Hospital-dia: sacarato de hidróxido férrico 100 mg/5 mL','EV','2 amp. em 250 mL de SF 1x por semana por 4 semanas (8 amp.).',{off:1})],nt:['O ferro EV costuma vir a 20 mg/mL (100 mg/5 mL); confira o rótulo antes de preparar. '+Y]});
 mk('Receituário — Constipação','constipação óleo mineral lactulose naturetti',{a:[
 E('Lactulose xarope','VO','15 mL de 12/12h até evacuar; interromper e reiniciar se ressecamento.'),
 E('Óleo mineral','VO','1 colher de sopa 2x/dia por 30 dias (não usar em quem se engasga ou é acamado).',{off:1}),
@@ -218,7 +218,7 @@ T('Pantoprazol','comprimido 40 mg',40,1,24,60,60,{nt:'Em jejum pela manhã'}),
 T('Omeprazol','cápsula 20 mg',20,1,24,60,60,{off:1,nt:'20–40 mg em jejum pela manhã'}),
 T('Domperidona','comprimido 10 mg',10,1,8,30,90,{off:1,nt:'30 min antes das refeições'}),
 T('Bromoprida','comprimido 10 mg',10,1,8,5,15,{off:1,sos:'náusea ou vômito'}),
-E('Hidróxido de Al/Mg + simeticona (Mylanta Plus)','VO','3 colheres de chá entre as refeições.',{off:1})],nt:['Ranitidina (listada no receituário-fonte) foi retirada do mercado brasileiro. '+Y]});
+E('Hidróxido de Al/Mg + simeticona (Mylanta Plus)','VO','3 colheres de chá entre as refeições.',{off:1})],nt:['A ranitidina foi retirada do mercado brasileiro; use IBP ou famotidina. '+Y]});
 mk('Receituário — Dor abdominal por giardíase/amebíase e cisto pilonidal','giardíase amebíase cisto pilonidal metronidazol ciprofloxacino buscopan',{a:[
 T('Metronidazol','comprimido 400 mg',400,1,8,7,21),
 T('Ciprofloxacino','comprimido 500 mg',500,1,12,7,14,{off:1,nt:'Cisto pilonidal infectado'}),

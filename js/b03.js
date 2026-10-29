@@ -38,7 +38,7 @@ add("Gestante — suplementação do pré-natal","gestante gravidez pré-natal �
  X("Ácido fólico","comprimido 400 mcg","1 comprimido VO 1x ao dia, o mais cedo possível, até a 12ª semana (prevenção de defeitos do tubo neural).",{hd:"conforme semanas"}),
  X("Sulfato ferroso 40 mg de ferro elementar","comprimido","1 comprimido VO após o almoço, a partir da 20ª semana (antes, se anemia), até 3 meses após o parto.",{hd:"conforme duração"}),
  X("Carbonato de cálcio 1.250 mg (500 mg de cálcio elementar)","comprimido","1 comprimido VO 2x ao dia (manhã e noite), com intervalo mínimo de 2 horas do ferro.",{hd:"conforme duração"})],
- nt:["As fontes divergem no início do cálcio (12ª ou 20ª semana): siga o protocolo local.","Prevenção de pré-eclâmpsia: cálcio; anemia: ferro."]});
+ nt:["O início do cálcio varia entre protocolos (12ª ou 20ª semana): siga o protocolo local.","Prevenção de pré-eclâmpsia: cálcio; anemia: ferro."]});
 FAM.push([/^Gestante — /,'gest']);
 CL.gest={q:["Idade gestacional (DUM/USG)? Está fazendo pré-natal?","Sangramento, perda de líquido ou contrações?","Movimentos fetais presentes?","PA atual? Cefaleia forte, escotomas, dor epigástrica ou inchaço súbito?","Alergias e medicações em uso?"],
  or:["Use apenas o que foi prescrito e evite automedicação.","Mantenha o pré-natal e as vacinas em dia.","Procure a maternidade se tiver sangramento, perda de líquido, contrações, redução dos movimentos do bebê, febre, dor de cabeça forte com visão turva ou inchaço súbito."]};
@@ -70,7 +70,7 @@ const EM=[
  ['Adrenalina — parada (1:10.000: 1 mL + 9 mL SF)',w=>fs(w*0.1)+' mL EV/IO','0,01 mg/kg; repetir a cada 3–5 min'],
  ['Adrenalina pura 1 mg/mL — anafilaxia IM',w=>fs(Math.min(w*0.01,0.5))+' mL IM','0,01 mg/kg; máx. 0,5 mL'],
  ['Atropina 0,25 mg/mL',w=>fs(w*0.08)+' mL EV','0,02 mg/kg (dose única máx. 0,5 mg); com 0,5 mg/mL use metade do volume'],
- ['Diazepam 10 mg/2 mL — convulsão',w=>fs(w*0.04)+' a '+fs(w*0.06)+' mL EV (diluir no dobro de SF)','0,2 a 0,3 mg/kg (as fontes divergem); máx. 10 mg por dose; repetir a cada 5 min, até 3 vezes (máx. 20 mg)'],
+ ['Diazepam 10 mg/2 mL — convulsão',w=>fs(w*0.04)+' a '+fs(w*0.06)+' mL EV (diluir no dobro de SF)','0,2 a 0,3 mg/kg; máx. 10 mg por dose; repetir a cada 5 min, até 3 vezes (máx. 20 mg)'],
  ['Midazolam 5 mg/mL — convulsão IM (sem acesso)',w=>fs(w*0.03)+' a '+fs(w*0.04)+' mL IM','Fontes: 0,03 mL/kg (0,15 mg/kg) ou 0,04 mL/kg (0,2 mg/kg)'],
  ['Fenitoína 50 mg/mL — convulsão > 15 min',w=>fs(w*0.4)+' mL (diluir no dobro de SF)','20 mg/kg; infundir lento (máx. 1 mg/kg/min) com monitorização'],
  ['Fenobarbital 100 mg/mL',w=>fs(w*0.2)+' mL IM/EV lento','20 mg/kg; 1ª escolha no neonato'],
@@ -95,7 +95,7 @@ SCALES.prenat={n:'Pré-natal: roteiro por trimestre e alertas (APS)',kw:'pré-na
  ['1ª consulta (idealmente antes de 12 semanas)','Testes rápidos (sífilis, HIV, hepatites B e C) e exames do 1º trimestre; USG transvaginal obstétrica para datar a IG (7 a 10 semanas, ideal até 13); suplementação; orientar vacinas, repelente, consulta odontológica e maternidade de referência; retorno mensal.'],
  ['Ultrassons','Morfológica de 1º trimestre (translucência nucal): 11ª a 13ª semana · Morfológica de 2º trimestre: 20ª a 24ª semana · Ecocardiograma fetal com Doppler: 24ª a 28ª semana.'],
  ['2º trimestre (14 a 27 semanas)','TOTG 75 g entre 24 e 28 semanas; dTpa após 20 semanas; sintomáticos se necessário; retorno mensal.'],
- ['Suplementação','Ácido fólico 400 mcg até a 12ª semana · Sulfato ferroso 40 mg de ferro elementar a partir da 20ª semana · Carbonato de cálcio 1.250 mg 2x/dia (início na 12ª ou 20ª semana: fontes divergem).'],
+ ['Suplementação','Ácido fólico 400 mcg até a 12ª semana · Sulfato ferroso 40 mg de ferro elementar a partir da 20ª semana · Carbonato de cálcio 1.250 mg 2x/dia (início na 12ª ou 20ª semana, conforme o protocolo local).'],
  ['Rh negativo','Tipagem e Coombs indireto na 1ª consulta. Parceiro Rh+ ou desconhecido: repetir Coombs mensal até 28 semanas e quinzenal depois. Imunoglobulina anti-D 300 mcg IM entre 28 e 34 semanas e até 72 h após o parto (RN Rh+) ou após aborto, sangramento ou procedimento invasivo. Coombs > 1:16: encaminhar ao alto risco.'],
  ['Hipertensão','PA ≥ 140x90 em 3 ou mais avaliações, em dias diferentes: acompanhar no alto risco. Cefaleia com escotomas, dor epigástrica ou edema súbito: descartar pré-eclâmpsia.'],
  ['Altura uterina','Diferença > 3 cm da IG, ou abaixo do P10 / acima do P90: pedir USG obstétrica.'],

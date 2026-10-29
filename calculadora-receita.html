@@ -59,7 +59,7 @@ section[hidden]{display:none}textarea{font:inherit}
 <div id="al" class="card" hidden></div>
 <details class="card" id="stk"><summary><b>Estoque da minha unidade</b> (<span id="sn">0</span> itens) — opcional</summary><div class="fm" style="margin:8px 0">Cadastre o que tem no local: o app avisa quando a receita tem algo que falta. Fica salvo neste aparelho.</div><input id="sq" autocomplete="off" placeholder="1ª letra do remédio → escolha a apresentação (Enter adiciona texto livre)"><div id="ssug"></div><div id="sl"></div></details>
 <h2>Medicações e doses</h2><input id="mq" autocomplete="off" placeholder="Adicionar medicamento: 1ª letra (ex.: a → amoxicilina)"><div id="msug"></div><div id="meds"></div>
-<h2>Receita (padrão MedRoute) — toque no texto para editar</h2><div id="rxw"><div id="rx" contenteditable="true"></div></div>
+<h2>Receita — toque no texto para editar</h2><div id="rxw"><div id="rx" contenteditable="true"></div></div>
 <button id="cp">Copiar receita</button> <button id="pr" type="button">Imprimir</button> <button id="dr" type="button" hidden>Baixar receita</button> <button id="rf" type="button" hidden>Refazer receita automática</button>
 <h2>Adicionar medicamento manual</h2><div class="card grid"><div class="full"><label>Nome e apresentação</label><input id="mn" placeholder="ex.: Omeprazol 20 mg cápsula"></div><div class="full"><label>Como tomar</label><input id="mp" placeholder="ex.: 1 cápsula em jejum 1x ao dia por 14 dias"></div><div><label>Quantidade</label><input id="mqt" placeholder="ex.: 14 cápsulas"></div><div><button id="madd" type="button">Adicionar à receita</button></div></div>
 <h2>Perguntas, escalas e orientações</h2><div id="cl"></div>
@@ -73,30 +73,30 @@ section[hidden]{display:none}textarea{font:inherit}
 <div class="card"><b>Banco online automático (Supabase)</b><div class="fm" style="margin:6px 0">As receitas geradas pela IA são enviadas como pendentes; só aparecem para todos depois que você as aprova no painel do Supabase. Já vem preenchido de fábrica; só altere se trocar de projeto.</div><label>URL do projeto</label><input id="sbu" placeholder="https://xxxx.supabase.co"><label style="margin-top:8px">Chave anon</label><input id="sbk" autocomplete="off"><div class="row"><button class="chip" id="sbl" type="button">Trazer receitas revisadas</button><button class="chip" id="sbseed" type="button">Enviar condutas ao banco (1ª vez)</button></div><div id="sbs" class="fm"></div></div>
 </details>
 <button id="dl" type="button" hidden>Baixar app (arquivo único)</button>
-<div class="dsc">Apoio à prescrição. Base: modelos UBS/PS, Manual do Plantão (tabela pediátrica de antimicrobianos) e Guia de Diluições 2026. Conferido: peso÷3 (amoxicilina) = 50 mg/kg/dia; peso÷4 (cefalexina) = 50 mg/kg/dia; 1 gota/kg de dipirona = 25 mg/kg, paracetamol = 10 mg/kg, ibuprofeno 100 mg/mL: 2 gotas/kg = 10 mg/kg (20 gotas = 1 mL). Confirme sempre bula, alergias, função renal e protocolo local.</div>
+<div class="dsc">Apoio à prescrição com conteúdo próprio, organizado a partir de diretrizes nacionais e internacionais (Ministério da Saúde, sociedades médicas, OMS). Atalhos conferidos: peso÷3 (amoxicilina) = 50 mg/kg/dia; peso÷4 (cefalexina) = 50 mg/kg/dia; 1 gota/kg de dipirona = 25 mg/kg, paracetamol = 10 mg/kg, ibuprofeno 100 mg/mL: 2 gotas/kg = 10 mg/kg (20 gotas = 1 mL). Confirme sempre bula, alergias, função renal e protocolo local.</div>
 </section>
 </main>
 <nav class="tabbar"><button data-t="t-rx" class="on"><span>&#x1F4DD;</span>Receita</button><button data-t="t-bib"><span>&#x1F4DA;</span>Biblioteca</button><button data-t="t-ia"><span>&#x1F916;</span>IA</button><button data-t="t-fe"><span>&#x1F9EE;</span>Ferramentas</button><button data-t="t-cf"><span>⚙️</span>Config</button></nav>
-<script src="js/b01a.js?v=b255bd4b"></script>
+<script src="js/b01a.js?v=75001968"></script>
 <script src="js/b01b.js?v=fa0a0d5e"></script>
-<script src="js/b01c.js?v=21febf0c"></script>
-<script src="js/b01d.js?v=6f4c9657"></script>
+<script src="js/b01c.js?v=7e2e6e5c"></script>
+<script src="js/b01d.js?v=6a7a8c13"></script>
 <script src="js/b01e.js?v=6b464cfb"></script>
-<script src="js/b02a.js?v=d31a8fc8"></script>
+<script src="js/b02a.js?v=609a7da6"></script>
 <script src="js/b02b.js?v=65ad2fee"></script>
-<script src="js/b03.js?v=62227e1b"></script>
+<script src="js/b03.js?v=22a3182a"></script>
 <script src="js/b04.js?v=9ec0c4da"></script>
 <script src="js/b05.js?v=b95d08eb"></script>
 <script src="js/b06.js?v=dd476b34"></script><script src="js/b07a.js?v=dac08037"></script>
 <script src="js/b07b.js?v=e72d03e0"></script>
 <script src="js/b07c.js?v=e26f5f05"></script><script src="js/b08a.js?v=d6cc4046"></script>
-<script src="js/b08b.js?v=a9e6aadd"></script><script src="js/b09a.js?v=f766c8c9"></script>
-<script src="js/b09b.js?v=d56f0b8e"></script>
-<script src="js/b09c.js?v=4edb65bb"></script>
-<script src="js/b09d.js?v=d9532c3d"></script>
-<script src="js/b10a.js?v=05ba2aa6"></script>
+<script src="js/b08b.js?v=a9e6aadd"></script><script src="js/b09a.js?v=37be6435"></script>
+<script src="js/b09b.js?v=21d571b4"></script>
+<script src="js/b09c.js?v=161fe9aa"></script>
+<script src="js/b09d.js?v=98af9a93"></script>
+<script src="js/b10a.js?v=2dbc769b"></script>
 <script src="js/b10b.js?v=d3dacbef"></script>
-<script src="js/b11.js?v=d5445c34"></script>
+<script src="js/b11.js?v=df135b22"></script>
 <script src="js/b12a.js?v=d8581604"></script>
 <script src="js/b12b.js?v=46f1be71"></script>
 <script src="js/b12c.js?v=0d6a4746"></script>

@@ -15,7 +15,7 @@ T9('conv','⚡','Crise convulsiva','convulsão crise convulsiva status epileptic
  '#1ª linha (> 3 meses): benzodiazepínico — repetir em 5 min, máx. 3 doses; preparar para intubar a partir da 2ª dose',
  'Midazolam EV 0,1–0,3 mg/kg = '+f1(w*0.1)+'–'+f1(mid)+' mg (máx. '+(w<40?5:10)+' mg). Diluir 1 mL (5 mg) + 4 mL AD → 1 mg/mL: '+f1(mid1)+'–'+f1(mid)+' mL.',
  'Sem acesso: midazolam intranasal puro 0,2–0,3 mg/kg = '+f1(w*0.2)+'–'+f1(Math.min(w*0.3,7.5))+' mg ('+f2(w*0.2/5)+'–'+f2(Math.min(w*0.3,7.5)/5)+' mL da ampola 5 mg/mL, dividido nas duas narinas; máx. 7,5 mg). IM 0,2 mg/kg = '+f1(w*0.2)+' mg.',
- 'Alternativa: diazepam EV 0,2–0,4 mg/kg = '+f1(w*0.2)+'–'+f1(Math.min(w*0.4,10))+' mg (ampola 10 mg/2 mL = 5 mg/mL → '+f1(w*0.2/5)+'–'+f1(Math.min(w*0.4,10)/5)+' mL), puro e lento, máx. 10 mg. Retal: 0,3–0,5 mg/kg = '+f1(w*0.3)+'–'+f1(Math.min(w*0.5,20))+' mg (RFOFOS chega a 1 mg/kg; UPA usa 0,3). Não usar IM.',
+ 'Alternativa: diazepam EV 0,2–0,4 mg/kg = '+f1(w*0.2)+'–'+f1(Math.min(w*0.4,10))+' mg (ampola 10 mg/2 mL = 5 mg/mL → '+f1(w*0.2/5)+'–'+f1(Math.min(w*0.4,10)/5)+' mL), puro e lento, máx. 10 mg. Retal: 0,3–0,5 mg/kg = '+f1(w*0.3)+'–'+f1(Math.min(w*0.5,20))+' mg (há protocolos de 0,3 a 1 mg/kg). Não usar IM.',
  '#Se persistir após benzodiazepínicos',
  'Fenitoína 20 mg/kg = '+f0(Math.min(w*20,1000))+' mg EV (máx. 1000 mg): ampola 50 mg/mL diluída 1:4 em SF → 10 mg/mL = '+f1(Math.min(w*2,100))+' mL em 20–30 min (máx. 50 mg/min). NÃO diluir em SG nem infundir junto com KCl/Ringer. Repetir 5 mg/kg até 30 mg/kg. Preferir em crise focal, tumor de SNC, TCE.',
  'Fenobarbital 20 mg/kg = '+f0(w*20)+' mg EV (ampola 100 mg/mL diluída 1:9 → 10 mg/mL = '+f1(w*2)+' mL) em 10 min; leva 15–20 min para agir. 1ª escolha em < 3 meses. Repetir 5–10 mg/kg (máx. total 30 mg/kg).',
@@ -34,7 +34,7 @@ T9('conv','⚡','Crise convulsiva','convulsão crise convulsiva status epileptic
 T9('asma','\uD83E\uDEC1','Crise de asma / broncoespasmo','asma crise broncoespasmo chiado salbutamol ipratrópio prednisolona magnésio sibilância',(w,a)=>{
  const j=cl(Math.round(w/3.5),2,10),ip=w<10?10:w<=20?20:40;
  return{h:[
- '#Conduta básica (RFOFOS/Albert Sabin 2026, André Ribeiro)',
+ '#Conduta básica',
  'O₂ se SatO₂ < 95%. Gravidade: leve (fala frases, SatO₂ > 95%), moderada (musculatura acessória, SatO₂ 90–94%), grave (fala entrecortada, SatO₂ < 90%), iminência de PCR (tórax silencioso, confusão).',
  'Salbutamol spray 100 mcg com espaçador: 1 jato/3–4 kg = '+j+' jatos (mín. 2, máx. 10) a cada 20 min por 3 doses; depois 1/1 h ou 2/2 h conforme melhora. Alternativa NBZ 0,5–1 mL (2,5–5 mg) em 2 mL SF.',
  'Brometo de ipratrópio (0,25 mg/mL) nas 3 primeiras horas: '+ip+' gotas/dose (< 10 kg: 10; 10–20 kg: 20; > 20 kg: 40) junto ao β2, a cada 20 min nas crises moderada/grave; ou spray 4–8 jatos.',
@@ -48,7 +48,7 @@ T9('asma','\uD83E\uDEC1','Crise de asma / broncoespasmo','asma crise broncoespas
  'Melhora sustentada, SatO₂ ≥ 94% em ar ambiente, β2 espaçado ≥ 4/4 h. Manter corticoide oral 5 dias (1 mg/kg/dia) e iniciar/ajustar medicação inalatória de manutenção (beclometasona).'
  ],c:[
  '#Receita para casa',
- 'Aerolin (salbutamol) spray 100 mcg: '+(w?j+' jatos':'jatos por peso')+' com espaçador de 4/4h por 5 dias (modelo Thaíza), depois conforme necessidade (usar também em crise).',
+ 'Aerolin (salbutamol) spray 100 mcg: '+(w?j+' jatos':'jatos por peso')+' com espaçador de 4/4h por 5 dias, depois conforme necessidade (usar também em crise).',
  'Predsim/prednisolona 3 mg/mL: '+(w?f1(Math.min(w,60)/3)+' mL (1 mg/kg)':'1 mg/kg')+' 1x ao dia pela manhã por 5 dias.',
  'Lavagem nasal ao menos 6x/dia. Se asma persistente: beclometasona (Clenil HFA) conforme faixa etária por 3 meses, com reavaliação.',
  'Controle ambiental: evitar poeira, mofo, fumaça de cigarro, animais; lavar roupas de cama semanalmente.',
@@ -60,7 +60,7 @@ T9('crupe','\uD83D\uDC15','Crupe / laringite (estridor)','crupe laringite estrid
  'Manter a criança calma (no colo); evitar exame de orofaringe se suspeita de epiglotite. O₂ umidificado se SatO₂ < 94%. Classificar: Westley (ver Ferramentas).',
  'Dexametasona 0,15–0,6 mg/kg dose única VO/IM/EV = '+f1(Math.min(w*0.15,10))+'–'+f1(Math.min(w*0.6,10))+' mg (máx. 10 mg; 0,6 mg/kg nos casos moderados/graves). Macete (4 mg/mL): peso × 0,15 mL IM puro.',
  'Budesonida NBZ 2–4 mg (alternativa se não tolera VO).',
- 'Estridor em repouso/moderado-grave: adrenalina 1:1000 (1 mg/mL) NBZ 0,5 mL/kg = '+f1(Math.min(w*0.5,5))+' mL (máx. 5 mL; André Ribeiro 0,3–0,5 mL/kg) diluída em SF até 3–5 mL; pode repetir. Observar ≥ 2–4 h após adrenalina (rebote).',
+ 'Estridor em repouso/moderado-grave: adrenalina 1:1000 (1 mg/mL) NBZ 0,5 mL/kg = '+f1(Math.min(w*0.5,5))+' mL (máx. 5 mL; faixa 0,3–0,5 mL/kg) diluída em SF até 3–5 mL; pode repetir. Observar ≥ 2–4 h após adrenalina (rebote).',
  'Internar se: estridor persistente em repouso após tratamento, hipoxemia, > 2 doses de adrenalina, toxemia, < 6 meses, dificuldade de retorno.'
  ],c:[
  'Dexametasona 0,15 mg/kg VO dose única ('+(w?f1(Math.min(w*0.15,10))+' mg':'por peso')+'), ou prednisolona 1 mg/kg/dia por 3 dias.',
@@ -69,7 +69,7 @@ T9('crupe','\uD83D\uDC15','Crupe / laringite (estridor)','crupe laringite estrid
 
 T9('anafi','\uD83D\uDC1D','Anafilaxia','anafilaxia alergia grave adrenalina choque anafilático urticária edema glote',(w,a)=>({h:[
  '#Conduta imediata (não atrasar a adrenalina)',
- 'Adrenalina IM (1 mg/mL, sem diluir) 0,01 mg/kg = '+f2(Math.min(w*0.01,0.5))+' mg = '+f2(Math.min(w*0.01,0.5))+' mL no vasto lateral da coxa (macete: peso ÷ 100 mL). Máx. 0,5 mg (RFOFOS) — o e-book do Dr. Caíque usa 0,3 mg. Repetir a cada 5–15 min até 3x. Dose fixa: < 6 m 0,1–0,15 mg; 6 m–6 a 0,15 mg; 6–12 a 0,3 mg; > 12 a 0,5 mg.',
+ 'Adrenalina IM (1 mg/mL, sem diluir) 0,01 mg/kg = '+f2(Math.min(w*0.01,0.5))+' mg = '+f2(Math.min(w*0.01,0.5))+' mL no vasto lateral da coxa (macete: peso ÷ 100 mL). Máx. 0,5 mg por dose (alguns serviços limitam a 0,3 mg na criança). Repetir a cada 5–15 min até 3x. Dose fixa: < 6 m 0,1–0,15 mg; 6 m–6 a 0,15 mg; 6–12 a 0,3 mg; > 12 a 0,5 mg.',
  'Deitar com pernas elevadas, O₂ 100%, 2 acessos, monitor. Cristaloide (SF/Ringer) 20 mL/kg = '+f0(w*20)+' mL em bolus se hipotensão, repetindo se necessário.',
  'Broncoespasmo: salbutamol spray/NBZ (ver Asma). Estridor: adrenalina NBZ.',
  'Adjuvantes (não substituem a adrenalina): anti-histamínico, corticoide — metilprednisolona 1–2 mg/kg = '+f0(w)+'–'+f0(w*2)+' mg EV ou prednisolona 1 mg/kg.',
@@ -102,14 +102,14 @@ T9('gast','\uD83D\uDCA7','Diarreia e desidratação (planos A, B, C)','diarreia 
  'Depois: manutenção + reposição (Holliday-Segar: '+f0(hol(w))+' mL/dia = '+f1(hol(w)/24)+' mL/h) e iniciar SRO assim que possível. Dosar Na, K, glicemia, ureia/creatinina se grave.',
  'Internar se: Plano C, falha da SRO, vômitos incoercíveis, < 3 meses, doença de base, sinais de acidose/hipernatremia, família sem condições de retorno.'
  ],c:[
- '#Prescrição para casa (Plano A) — modelo Thaíza',
+ '#Prescrição para casa (Plano A)',
  'Soro de reidratação oral (Pedialyte/Hidralite) 2 sachês: 1 sachê em 1 litro de água; oferecer livremente após cada evacuação ou vômito (< 1 ano 50–100 mL; 1–10 anos 100–200 mL; > 10 anos à vontade). Descartar após 24 h.',
  'Ondansetrona (Vonau Flash 4 mg / Ondif 4 mg filme / Nautex gotas) de 8/8h se náuseas ou vômitos.',
  'Floratil 1 flaconete de 12/12h por 3 dias ou Provance 1 cp mastigável ao dia por 5 dias.',
- 'Unizinco Kids 1x/dia por 14 dias (modelo Thaíza) — ou zinco elementar 10 mg/dia (< 6 meses) / 20 mg/dia (≥ 6 meses) por 10 dias (OMS/André Ribeiro).',
+ 'Unizinco Kids 1x/dia por 14 dias — ou zinco elementar 10 mg/dia (< 6 meses) / 20 mg/dia (≥ 6 meses) por 10 dias (OMS).',
  'Dipirona gotas '+(w?f0(w*0.4)+' gotas':'(peso × 0,4 gotas)')+' de 6/6h se dor ou febre.',
  'Aumentar ingesta hídrica; alimentação normal, exceto comidas gordurosas; manter aleitamento.',
- 'Se necessário: albendazol 40 mg/mL 10 mL hoje e repetir em 15 dias. Se infecciosa: azitromicina 200 mg/5 mL '+(w?f1(w/4)+' mL (peso ÷ 4)':'peso ÷ 4 mL')+' 1x/dia por 3 dias (modelo Thaíza usa 4 mL fixos), ou Bactrim F 12/12h por 7 dias.',
+ 'Se necessário: albendazol 40 mg/mL 10 mL hoje e repetir em 15 dias. Se infecciosa: azitromicina 200 mg/5 mL '+(w?f1(w/4)+' mL (peso ÷ 4)':'peso ÷ 4 mL')+' 1x/dia por 3 dias, ou Bactrim F 12/12h por 7 dias.',
  'Sem antidiarreicos (loperamida). Antibiótico só se disenteria (sangue/muco com febre).'
  ],r:['Muita sede, olhos fundos, boca seca, sem urinar > 6 h','Vômitos repetidos que impedem tomar o soro','Sangue nas fezes, febre alta persistente, barriga muito dolorida','Sonolência, irritabilidade excessiva, recusa de líquidos'],rx:['Gastroenterite — sem sangue (hidratação + antiemético)','Gastroenterite — completa (SRO + zinco + probiótico)']}));
 
@@ -127,8 +127,8 @@ T9('hv','\uD83E\uDE78','Hidratação venosa de manutenção (soro)','hidrataçã
  ],c:['Retomar via oral assim que possível; oferecer líquidos fracionados.'],r:['Diurese diminuída, prostração, vômitos'],rx:[]}});
 
 T9('bvia','\uD83D\uDC76','Bronquiolite viral aguda (lactente)','bronquiolite vsr lactente sibilância viral aspiração nasal oxigênio nirsevimabe',(w,a)=>({h:[
- '#Conduta (HMV / RFOFOS): suporte',
- 'Lavagem nasal com SF 0,9% + aspiração das vias aéreas superiores; O₂ se SatO₂ < 92% persistente (RFOFOS: manter > 94%); cabeceira elevada.',
+ '#Conduta: suporte',
+ 'Lavagem nasal com SF 0,9% + aspiração das vias aéreas superiores; O₂ se SatO₂ < 92% persistente (alguns serviços mantêm > 94%); cabeceira elevada.',
  'Hidratação/alimentação: fracionar a dieta; se não suporta VO, sonda ou SF 0,9% + glicose com volume de manutenção ('+f0(hol(w))+' mL/dia), evitando hiperhidratação.',
  'Não usar de rotina: broncodilatador, corticoide, solução salina 3%, fisioterapia respiratória, antibiótico.',
  'Internar se: apneia, FR > 60, SatO₂ < 92% persistente, < 3 meses (ou prematuro), desidratação/recusa alimentar, esforço respiratório, cardiopatia/doença pulmonar, família sem condições de observar.',
