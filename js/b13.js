@@ -1,7 +1,7 @@
 
 /* ===== Parte 15 — conteúdo vindo do banco online (protocolos p:, diagnósticos dx:, sintomas sx:) ===== */
 (function(){
-const OK=['off','aine','sos','nt','g','mx','min','hd','rp','rep','ho','ca'];
+const OK=['off','aine','sos','nt','g','mx','min','hd','rp','rep','ho','ca','su','ns','q'];
 const hs=[0,2,3,4,6,8,12,24];
 const f1=x=>String(Math.round(x*10)/10).replace('.',','),f2=x=>String(Math.round(x*100)/100).replace('.',',');
 const opts=o=>{const r={};if(o&&typeof o==='object')OK.forEach(k=>{if(o[k]!=null&&o[k]!==false&&o[k]!=='')r[k]=(typeof o[k]==='string'?o[k].slice(0,300):o[k])});return r};

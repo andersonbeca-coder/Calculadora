@@ -22,7 +22,10 @@ function applyBk(k){const e=BK[k],c=(e.c||[]).map(mkItem).filter(Boolean),a=(e.a
  const s=document.getElementById('pat');if(s&&![...s.options].some(o=>o.value===k))s.add(new Option(k,k))}
 Object.keys(BK).forEach(k=>{try{applyBk(k)}catch(e){}});
 $("pat").innerHTML='<option value=""></option>'+Object.keys(P).map(k=>`<option>${k}</option>`).join("");
-function list(){const p=P[$("pat").value];return p?p[$("tipo").value]||null:null}
+window.susOn=()=>{const e=document.getElementById('susv');if(e)return e.checked;try{return !!JSON.parse(localStorage.getItem('susv')||'false')}catch(x){return false}};
+window.susF=l=>{if(!Array.isArray(l))return l;const on=susOn(),r=l.filter(m=>on?!m.ns:!m.su);return r.length?r:l};
+window.susHas=l=>Array.isArray(l)&&l.some(m=>m.su||m.ns);
+function list(){const p=P[$("pat").value];let l=p?p[$("tipo").value]||null:null;if(!l)return l;l=susF(l);const d=$("dest")?$("dest").value:"c",f=l.filter(m=>d==="h"?!m.ca:!m.ho);return f.length?f:l}
 function build(){if(!KEEP)drawCl();
   const l=list(),box=$("meds");box.innerHTML="";
   if(!l&&!(KEEP&&cur.length)){cur=[];box.innerHTML='<div class="card fm">'+(!$("tipo").value?'Escolha primeiro: criança ou adulto.':!$("pat").value?'Escolha a doença (digite a 1ª letra acima).':'Não há modelo '+($("tipo").value==="a"?"de adulto":"pediátrico")+' para esta doença nas fontes carregadas.')+'</div>';upd();return}

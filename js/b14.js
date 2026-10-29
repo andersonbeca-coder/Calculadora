@@ -185,7 +185,7 @@ function protoRx(k,t,dest){
   sel.pat.value=k;sel.tipo.value=t;sel.dest.value=dest;
   const hosp=isHosp(k),L=(P[k]&&P[k][t])||[],keep=[];
   const hoOnly=hospOnly(k);
-  L.forEach((m,i)=>{if(dest==='h'?m.ca:(m.ho||(hoOnly&&!m.ca)||(hosp&&RT(m)==='USO PARENTERAL'&&!m.ca)))return;keep.push(i)});
+  L.forEach((m,i)=>{if(susOn()?m.ns:m.su)return;if(dest==='h'?m.ca:(m.ho||(hoOnly&&!m.ca)||(hosp&&RT(m)==='USO PARENTERAL'&&!m.ca)))return;keep.push(i)});
   cur=keep.map(i=>({...L[i],on:isOn(k,t,L[i]),_i:i}));
   CUR_OR=clOf(k).or||null;
   cur.forEach(m=>{m.r=calc(m)});

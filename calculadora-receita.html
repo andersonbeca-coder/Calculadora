@@ -47,6 +47,7 @@ section[hidden]{display:none}textarea{font:inherit}
 <div class="card grid">
 <div class="full"><label>1) Quem será atendido?</label><div class="seg" data-for="tipo"><button type="button" data-v="c">&#x1F476; Criança</button><button type="button" data-v="a">&#x1F9D1; Adulto</button></div><select id="tipo" hidden><option value="">— escolha: criança ou adulto —</option><option value="c">Criança (dose por peso)</option><option value="a">Adulto (dose fixa)</option></select></div>
 <div class="full"><label>2) Onde a prescrição será usada?</label><div class="seg" data-for="dest"><button type="button" data-v="c" class="on">&#x1F3E0; Casa / UBS</button><button type="button" data-v="h">&#x1F3E5; Hospital / PS</button></div><select id="dest" hidden><option value="c">&#x1F3E0; Casa — alta / UBS (receita com orientações e sinais de alarme)</option><option value="h">&#x1F3E5; Hospital — PS / observação / internação (prescrição com cuidados de enfermagem)</option></select></div>
+<div class="full"><label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="susv" style="width:auto"> Versão “disponível no SUS” (troca a 1ª linha pelos medicamentos da rede pública, quando houver)</label></div>
 <div><label>Peso (kg)</label><input id="peso" type="number" step="0.1" min="0" inputmode="decimal"></div>
 <div><label>Idade (anos; ex.: 0,5 = 6 meses)</label><input id="idade" type="number" step="0.1" min="0" inputmode="decimal"></div>
 
@@ -68,7 +69,8 @@ section[hidden]{display:none}textarea{font:inherit}
 </section>
 <section id="t-bib" hidden><div id="lib"></div></section>
 <section id="t-ia" hidden><div id="aiw"></div></section>
-<section id="t-cf" hidden><div id="cfg"></div><details class="card" id="adv"><summary><b>Avançado</b> <span class="fm">banco de receitas, GitHub e Supabase — normalmente não precisa mexer</span></summary><div class="fm" style="margin:8px 0">O banco online (Supabase) já vem configurado no app. Aqui ficam as receitas salvas neste aparelho e opções antigas de compartilhamento.</div><h2>Meu banco de receitas (alimentado pela IA)</h2><div id="bkl"></div>
+<section id="t-cf" hidden><div id="cfg"></div><div class="card"><b>&#x1F3DB;️ Atualizações do Ministério da Saúde</b> <span class="pill ok" id="msbadge"></span><div class="fm" style="margin:6px 0">O servidor verifica todos os dias as páginas oficiais de protocolos (PCDT/Conitec) e lista aqui o que foi publicado ou atualizado. Com um toque, a IA cria ou atualiza a doença no app (como rascunho para revisão).</div><div id="msn"></div><div class="row"><button class="chip" id="msr" type="button">Verificar agora</button></div></div>
+<details class="card" id="adv"><summary><b>Avançado</b> <span class="fm">banco de receitas, GitHub e Supabase — normalmente não precisa mexer</span></summary><div class="fm" style="margin:8px 0">O banco online (Supabase) já vem configurado no app. Aqui ficam as receitas salvas neste aparelho e opções antigas de compartilhamento.</div><h2>Meu banco de receitas (alimentado pela IA)</h2><div id="bkl"></div>
 <div class="card"><b>Compartilhar o banco pelo GitHub</b> <span class="fm">(método antigo, opcional)</span><div class="fm" style="margin:6px 0">O app lê o arquivo banco.json do site ao abrir. Para publicar as receitas geradas: crie no GitHub um token com permissão de escrita em Contents só neste repositório e cole abaixo (fica só neste aparelho).</div><label>Repositório (dono/nome)</label><input id="ghr"><label style="margin-top:8px">Token do GitHub</label><input id="ght" type="password" autocomplete="off"><div class="row"><button class="chip" id="ghp" type="button">Publicar banco no GitHub</button><button class="chip" id="ghl" type="button">Atualizar do GitHub</button></div><div id="ghs" class="fm"></div></div>
 <div class="card"><b>Banco online automático (Supabase)</b><div class="fm" style="margin:6px 0">As receitas geradas pela IA são enviadas como pendentes; só aparecem para todos depois que você as aprova no painel do Supabase. Já vem preenchido de fábrica; só altere se trocar de projeto.</div><label>URL do projeto</label><input id="sbu" placeholder="https://xxxx.supabase.co"><label style="margin-top:8px">Chave anon</label><input id="sbk" autocomplete="off"><div class="row"><button class="chip" id="sbl" type="button">Trazer receitas revisadas</button><button class="chip" id="sbseed" type="button">Enviar condutas ao banco (1ª vez)</button></div><div id="sbs" class="fm"></div></div>
 </details>
@@ -78,10 +80,10 @@ section[hidden]{display:none}textarea{font:inherit}
 </main>
 <nav class="tabbar"><button data-t="t-rx" class="on"><span>&#x1F4DD;</span>Receita</button><button data-t="t-bib"><span>&#x1F4DA;</span>Biblioteca</button><button data-t="t-ia"><span>&#x1F916;</span>IA</button><button data-t="t-fe"><span>&#x1F9EE;</span>Ferramentas</button><button data-t="t-cf"><span>⚙️</span>Config</button></nav>
 <script src="js/b01a.js?v=75001968"></script>
-<script src="js/b01b.js?v=fa0a0d5e"></script>
-<script src="js/b01c.js?v=7e2e6e5c"></script>
-<script src="js/b01d.js?v=6a7a8c13"></script>
-<script src="js/b01e.js?v=6b464cfb"></script>
+<script src="js/b01b.js?v=6123e17d"></script>
+<script src="js/b01c.js?v=606d59c5"></script>
+<script src="js/b01d.js?v=6d392728"></script>
+<script src="js/b01e.js?v=7342ae7b"></script>
 <script src="js/b02a.js?v=a3d2d134"></script>
 <script src="js/b02b.js?v=08d9073d"></script>
 <script src="js/b03.js?v=22a3182a"></script>
@@ -100,7 +102,7 @@ section[hidden]{display:none}textarea{font:inherit}
 <script src="js/b12a.js?v=d8581604"></script>
 <script src="js/b12b.js?v=46f1be71"></script>
 <script src="js/b12c.js?v=0d6a4746"></script>
-<script src="js/b13.js?v=0a6295d5"></script>
-<script src="js/b14.js?v=eb5edf21"></script>
+<script src="js/b13.js?v=3799a45f"></script>
+<script src="js/b14.js?v=f91f667f"></script>
 <script>window.addEventListener('load',function(){try{if(typeof P==='undefined'||typeof drawCaso!=='function'||typeof rx!=='function'){var d=document.createElement('div');d.style.cssText='position:fixed;left:0;right:0;top:0;z-index:99999;background:#b3261e;color:#fff;padding:10px 14px;font:14px/1.4 system-ui,sans-serif;text-align:center';d.textContent='Alguns arquivos do app não carregaram. Atualize a página (Ctrl+F5) ou tente novamente em alguns minutos.';document.body.appendChild(d)}}catch(e){}});</script>
 </body></html>
