@@ -165,6 +165,8 @@ const buGuiaBox=document.getElementById('bug');
 function buOpen(k){const pk=P[k];const tp=document.getElementById('tipo');tp.value=(pk.c&&!pk.a)?'c':'a';tp.dispatchEvent(new Event('change'));document.getElementById('pat').value=k;document.getElementById('q').value=k;document.getElementById('dest').value='c';build();rx();showTab('t-rx')}
 if(buGuiaBox)buGuiaBox.onclick=e=>{const b=e.target.closest('[data-gk]');if(b)buOpen(b.dataset.gk)};
 buDraw();buGuia();
+document.querySelectorAll('.tabbar [data-t="t-fe"]').forEach(b=>b.addEventListener('click',()=>setTimeout(buGuia,50)));
+setTimeout(buGuia,4000);
 
 async function msLoad(force){const o=document.getElementById('msn');if(!o)return;const c=sbCfg();if(!c.u||!c.k){o.innerHTML='<div class="fm">Configure o banco online abaixo para receber as atualizações.</div>';return}
  o.innerHTML='<div class="fm">Consultando…</div>';
