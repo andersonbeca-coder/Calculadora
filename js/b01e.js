@@ -71,6 +71,103 @@ async function sbSeedCond(){const c=sbCfg(),o=$('sbs');o.textContent='Enviando c
  let ok=0;try{for(let i=0;i<rows.length;i+=40){const r=await fetch(c.u+'/rest/v1/receitas',{method:'POST',headers:{...sbH(c.k),Prefer:'return=minimal'},body:JSON.stringify(rows.slice(i,i+40))});if(!r.ok)throw{message:'HTTP '+r.status+' — verifique a política (RLS) de inserção da tabela receitas'};ok+=Math.min(40,rows.length-i)}o.textContent='✓ '+ok+' conduta(s) enviada(s) como pendentes. Aprove (rev = true) no painel do Supabase para valerem para todos.'}catch(e){o.textContent='✗ '+(e.message||e)}}
 $('sbseed').onclick=sbSeedCond;
 $('sbl').onclick=sbPull;
+/* Parte 22: modelos, burocracia e guia rápido do plantão */
+const BU_BASE=[{name:'Evolução médica (modelo do hospital)',text:`EVOLUÇÃO MÉDICA
+
+DIH (dia de internação hospitalar):
+HD (hipóteses diagnósticas):
+ATB: sem / com (D0)
+ANTICOAGULANTE: sem / com (qual?)
+ESCORE DE PÁDUA:
+AINE / CORTICOIDE: sem / com (D0)
+HDA:
+AP (antecedentes pessoais):
+MUC (medicações de uso contínuo):
+ALERGIAS:
+EF admissão:
+
+EXAMES LABORATORIAIS (diários, específicos para a patologia):
+dd/mm:
+GASOMETRIA ARTERIAL (se indicada): pH / PO2 / PCO2 / HCO3 / BE / FiO2 / Hb / glicose / Na / K
+
+EXAMES DE IMAGEM (laudo ou interpretação; para copiar o laudo, tire foto, copie e cole aqui):
+
+DISPOSITIVOS (IOT, TQT, SNG, SNE, AVC, cateter de diálise, SVD):
+
+INTERCORRÊNCIAS NA INTERNAÇÃO (data: descrição clara, incluir extubação):
+
+DVA / SEDAÇÃO (qual, início e fim):
+
+EVOLUÇÃO:
+Estado geral, queixas, aceitação de dieta, eliminações, intercorrências nas últimas 12 h:
+
+EF ATUAL:
+AR:
+ACV:
+ABD:
+Neurocheck (Glasgow / pupilas / RASS):
+Extremidades:
+
+DVA:
+SEDAÇÃO:
+SSVV: PAS / PAD / FC / TAX / HGT
+BH (balanço hídrico):
+
+CD (conduta diária):`},{name:'Encaminhamento ao PSF / UBS',text:`HOSPITAL SAGRADO CORAÇÃO DE JESUS
+Rua Manoel Avelino de Paiva, s/n, Mari - PB · CEP 58345-000 · Tel.: (83) 99114-6391 · CNPJ 11.400.094/0001-02
+
+ENCAMINHAMENTO AO PSF / UBS
+
+Prezado(a) colega,
+
+Solicito, por gentileza, se possível, retorno precoce à unidade de saúde para realizar reavaliação de esquema anti-hipertensivo, anti-diabético ou outros, para que tenha um seguimento regular na atenção básica.
+
+NOME: ____________________________________________
+SUS / CPF: ______________________   PSF / UBS: ______________________
+
+MOTIVO PARA REAVALIAÇÃO:
+( ) Hipertensão arterial sistêmica
+( ) Diabetes mellitus
+( ) Insuficiência cardíaca
+( ) Outros: ______________________________________
+
+À disposição para qualquer esclarecimento.
+
+Atenciosamente,
+
+____________________________________
+MÉDICO(A) RESPONSÁVEL          DATA: ___/___/______`}];
+const BU_KEY='mods';
+const buLoad=()=>{try{return JSON.parse(localStorage.getItem(BU_KEY)||'[]')}catch(e){return[]}};
+const buSave=v=>{try{localStorage.setItem(BU_KEY,JSON.stringify(v))}catch(e){}};
+const buH=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const buAll=()=>BU_BASE.map(m=>Object.assign({base:true},m)).concat(buLoad());
+function buDraw(){const box=document.getElementById('bum');if(!box)return;
+ box.innerHTML=buAll().map((m,i)=>'<details class="card" style="margin:8px 0"><summary><b>'+buH(m.name)+'</b>'+(m.base?' <span class="pill ok">pronto</span>':'')+'</summary><pre style="white-space:pre-wrap;font:13px/1.4 system-ui,sans-serif;margin:8px 0">'+buH(m.text)+'</pre><div class="row"><button class="chip" type="button" data-bu="cp" data-i="'+i+'">Copiar</button> <button class="chip" type="button" data-bu="pr" data-i="'+i+'">Imprimir</button>'+(m.base?'':' <button class="chip" type="button" data-bu="del" data-i="'+i+'">Apagar</button>')+'</div></details>').join('')}
+const buBox=document.getElementById('bum');
+if(buBox)buBox.onclick=e=>{const b=e.target.closest('[data-bu]');if(!b)return;const i=+b.dataset.i,m=buAll()[i];if(!m)return;
+ if(b.dataset.bu==='cp'){copyText(m.text,b)}
+ else if(b.dataset.bu==='pr'){const w=window.open('','_blank');if(w){w.document.write('<!doctype html><meta charset="utf-8"><title>'+buH(m.name)+'</title><pre style="white-space:pre-wrap;font:14px/1.45 Arial,sans-serif">'+buH(m.text)+'</pre><script>print()<\/script>');w.document.close()}else{b.textContent='Permita pop-up'}}
+ else if(b.dataset.bu==='del'){const c=buLoad();c.splice(i-BU_BASE.length,1);buSave(c);buDraw()}};
+const buSaveBtn=document.getElementById('bus');
+if(buSaveBtn)buSaveBtn.onclick=()=>{const n=document.getElementById('bun').value.trim(),t=document.getElementById('but').value.trim(),o=document.getElementById('bum2');
+ if(!t){o.textContent='Cole ou suba um texto antes de salvar.';return}
+ const c=buLoad();c.push({name:n||('Modelo '+(c.length+1)),text:t});buSave(c);document.getElementById('bun').value='';document.getElementById('but').value='';o.textContent='Salvo ✓';buDraw()};
+const buFile=document.getElementById('buf');
+if(buFile)buFile.onchange=async e=>{const f=e.target.files[0];if(!f)return;const o=document.getElementById('bum2');
+ if(!/\.(txt|md|html?|csv|json)$/i.test(f.name)){o.textContent='PDF e imagem não são lidos aqui: abra o arquivo, copie o texto e cole no campo acima.';e.target.value='';return}
+ try{document.getElementById('but').value=await f.text();document.getElementById('bun').value=f.name.replace(/\.[^.]+$/,'');o.textContent='Texto carregado. Confira e toque em Salvar modelo.'}catch(err){o.textContent='Não foi possível ler o arquivo.'}
+ e.target.value=''};
+const BU_GUIA=['Amigdalite — amoxicilina 10 dias (1ª opção)','Otite média aguda — amoxicilina','Pneumonia — sem comorbidade (amoxicilina)','Gastroenterite — completa (SRO + zinco + probiótico)','Asma leve — crise leve','Crise de asma — alta do PS (5 dias)','Bronquiolite viral aguda','Diarreia aguda infecciosa (criança) — antibióticos por faixa','Pneumonia complicada na criança — antibióticos EV','Parada cardiorrespiratória na criança (RCP pediátrica)','Taquicardia com pulso na criança (TSV)','Choque séptico na criança','PS adulto — Anafilaxia (adrenalina IM)','PS adulto — Crise convulsiva (esquema do PS)'];
+function buGuia(){const el=document.getElementById('bug');if(!el||typeof P==='undefined')return;
+ el.innerHTML=BU_GUIA.filter(k=>P[k]).map(k=>'<button class="chip" type="button" data-gk="'+buH(k)+'" style="display:block;width:100%;text-align:left;margin:6px 0">'+buH(k)+'</button>').join('')}
+const buGuiaBox=document.getElementById('bug');
+function buOpen(k){const pk=P[k];const tp=document.getElementById('tipo');tp.value=(pk.c&&!pk.a)?'c':'a';tp.dispatchEvent(new Event('change'));document.getElementById('pat').value=k;document.getElementById('q').value=k;document.getElementById('dest').value='c';build();rx();showTab('t-rx')}
+if(buGuiaBox)buGuiaBox.onclick=e=>{const b=e.target.closest('[data-gk]');if(b)buOpen(b.dataset.gk)};
+buDraw();buGuia();
+document.querySelectorAll('.tabbar [data-t="t-fe"]').forEach(b=>b.addEventListener('click',()=>setTimeout(buGuia,50)));
+setTimeout(buGuia,4000);
+
 async function msLoad(force){const o=document.getElementById('msn');if(!o)return;const c=sbCfg();if(!c.u||!c.k){o.innerHTML='<div class="fm">Configure o banco online abaixo para receber as atualizações.</div>';return}
  o.innerHTML='<div class="fm">Consultando…</div>';
  try{if(force){try{await fetch(c.u+'/functions/v1/ms-atualizacao',{method:'POST',headers:{'content-type':'application/json'},body:'{}'})}catch(e){}}
