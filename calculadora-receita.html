@@ -65,7 +65,62 @@ section[hidden]{display:none}textarea{font:inherit}
 <h2>Adicionar medicamento manual</h2><div class="card grid"><div class="full"><label>Nome e apresentação</label><input id="mn" placeholder="ex.: Omeprazol 20 mg cápsula"></div><div class="full"><label>Como tomar</label><input id="mp" placeholder="ex.: 1 cápsula em jejum 1x ao dia por 14 dias"></div><div><label>Quantidade</label><input id="mqt" placeholder="ex.: 14 cápsulas"></div><div><button id="madd" type="button">Adicionar à receita</button></div></div>
 <h2>Perguntas, escalas e orientações</h2><div id="cl"></div>
 </section>
-<section id="t-fe" hidden><h2>Calculadoras, escalas e classificações</h2><div class="card"><input id="scq" autocomplete="off" placeholder="Buscar: bomba, gotejamento, mcg, diluição, glasgow, wells, curb…"><div id="scs"></div><div id="scr"></div></div>
+<section id="t-fe" hidden><h2>Plantão: modelos, burocracia e guia rápido</h2>
+<div class="card"><b>&#x1F4DD; Modelos de evolução e formulários</b><div class="fm">Modelos prontos do hospital. Toque em Copiar e cole no prontuário, ou em Imprimir.</div><div id="bum"></div></div>
+<div class="card"><b>&#x1F4CE; Subir e salvar um modelo</b><div class="fm">Suba um arquivo de texto (.txt, .md, .html) ou cole o texto. PDF e foto não são lidos aqui: copie o texto do documento e cole no campo.</div>
+<input type="file" id="buf" accept=".txt,.md,.html,.htm,.csv,.json" style="margin:8px 0">
+<input id="bun" autocomplete="off" placeholder="Nome do modelo (ex.: Encaminhamento hospital, Atestado)" style="margin:6px 0">
+<textarea id="but" rows="6" placeholder="Cole aqui o texto do modelo" style="width:100%"></textarea>
+<div class="row"><button class="chip" type="button" id="bus">Salvar modelo</button></div><div class="fm" id="bum2"></div></div>
+<div class="card"><b>&#x1F3E5; Burocracia: UBS, UPA e hospital</b>
+<details open><summary><b>Orientações do hospital (ofício de 01/06/2025)</b></summary><ul>
+<li>Acolher na porta e classificar o risco (Manchester).</li>
+<li>Internar em até 24 h. Preencher o prontuário com CID-10 ou CID-11. Atraso precisa de justificativa escrita.</li>
+<li>Evolução diária no modelo acima.</li>
+<li>Revisar as prescrições conforme a evolução e acompanhar os exames assim que saírem.</li>
+<li>Ao chegar ao plantão: visitar à beira do leito, resolver pendências (encaminhamentos, vagas, medicamentos em falta).</li>
+<li>Passar o caso aos familiares com clareza. Para más notícias, seguir o protocolo SPIKES.</li>
+<li>Conferir os equipamentos da urgência: laringoscópio, ECG, cardioversor e desfibrilador.</li>
+</ul></details>
+<details><summary><b>Notificação no SINAN: o que notificar</b></summary>
+<div class="fm">Base: lista nacional de notificação compulsória (Portaria GM/MS 6.734/2025, com alterações posteriores em 2026). Confira a portaria vigente antes de notificar.</div>
+<b>Imediata (até 24 h)</b><ul>
+<li>Botulismo, cólera, COVID-19 e síndrome gripal suspeita de COVID-19</li>
+<li>Óbito por dengue</li>
+<li>Sarampo e rubéola (doenças exantemáticas) e síndrome da rubéola congênita</li>
+<li>Febre amarela, febre maculosa e outras riquetsioses, hantavirose, peste, raiva humana</li>
+<li>Febre de chikungunya em área sem transmissão, e óbito suspeito</li>
+<li>Arboviroses como a febre do Nilo Ocidental; óbito suspeito por zika</li>
+<li>Malária extra-amazônica, poliomielite selvagem, paralisia flácida aguda</li>
+<li>Meningite e doença meningocócica (doença invasiva por Haemophilus ou meningococo)</li>
+<li>Influenza por novo subtipo, mpox, SRAG por coronavírus, SIM-A e SIM-P</li>
+<li>Doenças febris hemorrágicas emergentes; suspeita de disseminação intencional (antraz, tularemia, varíola)</li>
+<li>Eventos adversos graves ou óbitos pós-vacinação; evento de saúde pública</li>
+<li>Varicela grave internada ou óbito</li>
+</ul>
+<b>Semanal</b><ul>
+<li>Acidentes por animais peçonhentos e por animal transmissor de raiva</li>
+<li>Intoxicação exógena (inclui agrotóxicos e metais)</li>
+<li>Acidente de trabalho com exposição a material biológico; LER/DORT; câncer e outros agravos relacionados ao trabalho</li>
+<li>Violência e tentativa de suicídio (confira o prazo na portaria vigente)</li>
+<li>Coqueluche, difteria, tétano</li>
+<li>Dengue (casos), chikungunya (casos), zika (doença aguda em gestante e síndrome congênita)</li>
+<li>Sífilis (adquirida, congênita, em gestante), toxoplasmose gestacional e congênita</li>
+<li>Hepatites virais; HIV/AIDS; HTLV; hanseníase; tuberculose</li>
+<li>Leptospirose; malária amazônica; leishmanioses; esquistossomose; doença de Chagas</li>
+<li>Doença falciforme; febre tifoide; esporotricose humana; DCJ</li>
+<li>Óbito infantil e óbito materno</li>
+</ul>
+<div class="fm">Acidentes com animais peçonhentos, intoxicações e violências também têm ficha própria no SINAN. Anote o que notificou e a data.</div>
+</details>
+<details><summary><b>Encaminhamento para a UBS (PSF)</b></summary><div class="fm">Use o modelo "Encaminhamento ao PSF / UBS" na lista acima. Marque o motivo (hipertensão, diabetes, insuficiência cardíaca ou outros) e deixe na pasta da recepção, endereçada à atenção básica.</div></details>
+</div>
+<div class="card"><b>⚡ Guia rápido de prescrição</b><div class="fm">Toque em um cenário para abrir a receita já calculada (destino: casa). Antes de prescrever, confira alergias, gestação e medicações em uso. Para o hospital, troque o destino na aba Receita.</div>
+<div id="bug"></div>
+<div class="alb"><div>Antiemético com risco de QT (ex.: ondansetrona): se houver QTc prolongado ou distúrbio de K e Mg, avalie o ECG e corrija antes de usar.</div></div>
+<div class="fm">Dose pediátrica sempre pelo peso e pela faixa etária. Confira a dose calculada antes de imprimir.</div></div>
+
+<h2>Calculadoras, escalas e classificações</h2><div class="card"><input id="scq" autocomplete="off" placeholder="Buscar: bomba, gotejamento, mcg, diluição, glasgow, wells, curb…"><div id="scs"></div><div id="scr"></div></div>
 </section>
 <section id="t-bib" hidden><div id="lib"></div></section>
 <section id="t-ia" hidden><div id="aiw"></div></section>
@@ -83,7 +138,7 @@ section[hidden]{display:none}textarea{font:inherit}
 <script src="js/b01b.js?v=6123e17d"></script>
 <script src="js/b01c.js?v=606d59c5"></script>
 <script src="js/b01d.js?v=6d392728"></script>
-<script src="js/b01e.js?v=7342ae7b"></script>
+<script src="js/b01e.js?v=632b511f"></script>
 <script src="js/b02a.js?v=a3d2d134"></script>
 <script src="js/b02b.js?v=08d9073d"></script>
 <script src="js/b03.js?v=22a3182a"></script>
