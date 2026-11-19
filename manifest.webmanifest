@@ -1,0 +1,32 @@
+{
+  "name": "Prescreva · Dose, receita e conduta",
+  "short_name": "Prescreva",
+  "description": "Dose por peso, receita, prescrição hospitalar e condutas para UBS, UPA e plantão.",
+  "lang": "pt-BR",
+  "start_url": "./calculadora-receita.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f6f8",
+  "theme_color": "#0b6e66",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
